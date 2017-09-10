@@ -4,10 +4,10 @@ import me.eranik.algorithm.HashTable;
 
 public class Main {
     public static void main(String[] args) {
-        new Main().testHashTable();
+        testHashTable();
     }
 
-    public void testHashTable() {
+    public static void testHashTable() {
         HashTable storage = new HashTable();
         System.out.println("put (abc, 1): " + storage.put("abc", "1"));
         System.out.println("put (def, 2): " + storage.put("def", "2"));

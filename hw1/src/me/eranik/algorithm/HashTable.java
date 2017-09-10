@@ -2,27 +2,10 @@ package me.eranik.algorithm;
 
 import java.lang.Object;
 
-/**
- * This class implements a hash table, which maps keys to values.
- * Only {@code String} objects can be used as a key or as a value.
- *
- * @author   Anton Yermilov
- * @version  1.0
- * @since    2017-09-07
- */
 public class HashTable {
-    private LinkedList[] table;
-    private int capacity;
-    private int size;
-
-    /**
-     * Constructs a new, empty hashtable with a default initial capacity = 1.
-     */
-    public HashTable() {
-        table = new LinkedList[1];
-        capacity = 1;
-        size = 0;
-    }
+    private LinkedList[] table = new LinkedList[1];
+    private int capacity = 1;
+    private int size = 0;
 
     /**
      * Calculates a hash of a <code>key</code> string modulo <code>mod</code>.

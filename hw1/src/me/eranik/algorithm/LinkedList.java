@@ -1,26 +1,9 @@
 package me.eranik.algorithm;
 
-/**
- * This class implements a linked list, which stores objects and
- * provides access to them.
- *
- * @author   AntonYermilov
- * @version  1.0
- * @since    2017-09-07
- */
 public class LinkedList {
-    private Node begin;
-    private Node end;
-    private int size;
-
-    /**
-     * Constructs a new, empty linked list with a default initial values.
-     */
-    public LinkedList() {
-        begin = null;
-        end = null;
-        size = 0;
-    }
+    private Node begin = null;
+    private Node end = null;
+    private int size = 0;
 
     /**
      * Appends the specified element to the end of the list
@@ -29,7 +12,8 @@ public class LinkedList {
      */
     public void add(Object obj) {
         if (size == 0) {
-            begin = end = new Node(null, null, obj);
+            begin = new Node(null, null, obj);
+            end = begin;
         } else {
             Node node = new Node(null, end, obj);
             end.setNext(node);
