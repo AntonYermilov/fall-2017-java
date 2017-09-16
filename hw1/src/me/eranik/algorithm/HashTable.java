@@ -51,7 +51,6 @@ public class HashTable {
         table = newTable;
     }
 
-
     /**
      * Returns the number of stored elements.
      *
@@ -60,7 +59,6 @@ public class HashTable {
     public int size() {
         return size;
     }
-
 
     /**
      * Returns <code>true</code> if hashtable contains a <code>key</code> or
@@ -153,9 +151,9 @@ public class HashTable {
         for (LinkedList list : table) {
             if (list == null || list.isEmpty())
                 continue;
-            size -= list.size();
             list.clear();
         }
+        size = 0;
     }
 
     /**
@@ -186,43 +184,35 @@ public class HashTable {
          */
         @Override
         public boolean equals(Object other) {
-            return this.getClass().equals(other.getClass())
-                    && key.equals(((Data) other).key);
+            if (this == other)
+                return true;
+            if (!(other instanceof Data))
+                return false;
+            Data otherData = (Data) other;
+            return key.equals(otherData.key);
         }
 
+
         /**
-         * Returns the key value.
-         *
-         * @return the key value.
+         * @return hash of the object
          */
+        @Override
+        public int hashCode() {
+            return key.hashCode();
+        }
+
         public String getKey() {
             return key;
         }
 
-        /**true if another object has the same type with the current
-         * and their keys are equal; false otherwise
-         * Replaces the key value with another one.
-         *
-         * @param key the key value to be stored
-         */
         public void setKey(String key) {
             this.key = key;
         }
 
-        /**
-         * Returns the stored value.
-         *
-         * @return the stored value
-         */
         public String getValue() {
             return value;
         }
 
-        /**
-         * Replaces the stored value with another one.
-         *
-         * @param value the value to be stored
-         */
         public void setValue(String value) {
             this.value = value;
         }

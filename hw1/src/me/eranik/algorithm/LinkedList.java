@@ -181,56 +181,26 @@ public class LinkedList {
             this.obj = obj;
         }
 
-        /**
-         * Returns the reference to the next node of linked list.
-         *
-         * @return the reference to the next node of linked list
-         */
         public Node getNext() {
             return next;
         }
 
-        /**
-         * Replaces the reference to the next node with the new one
-         *
-         * @param next new reference to the next node of linked list
-         */
         public void setNext(Node next) {
             this.next = next;
         }
 
-        /**
-         * Returns the reference to the previous node of linked list.
-         *
-         * @return the reference to the previous node of linked list
-         */
         public Node getPrev() {
             return prev;
         }
 
-        /**
-         * Replaces the reference to the previous node with the new one
-         *
-         * @param prev new reference to the previous node of linked list
-         */
         public void setPrev(Node prev) {
             this.prev = prev;
         }
 
-        /**
-         * Returns the reference to the stored object.
-         *
-         * @return the reference to the stored object
-         */
         public Object getObject() {
             return obj;
         }
 
-        /**
-         * Replaces the reference to the stored object with the new one
-         *
-         * @param obj new reference to the stored object
-         */
         public void setObject(Object obj) {
             this.obj = obj;
         }
