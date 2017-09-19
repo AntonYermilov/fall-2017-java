@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw2-spiral.iml" filepath="$PROJECT_DIR$/.idea/modules/hw2-spiral.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw2-spiral_main.iml" filepath="$PROJECT_DIR$/.idea/modules/hw2-spiral_main.iml" group="hw2-spiral" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw2-spiral_test.iml" filepath="$PROJECT_DIR$/.idea/modules/hw2-spiral_test.iml" group="hw2-spiral" />
+    </modules>
+  </component>
+</project>
