@@ -113,7 +113,7 @@ public class HashTable {
         String res = null;
         if (index != -1) {
             res = ((Data) table[hash].get(index)).getValue();
-            table[hash].set(index, value);
+            table[hash].set(index, new Data(key, value));
         } else {
             size++;
             table[hash].add(new Data(key, value));
