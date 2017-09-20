@@ -156,6 +156,7 @@ public class LinkedList {
         Node node = begin;
         while (index != 0) {
             node = node.getNext();
+            index--;
         }
         return node;
     }
