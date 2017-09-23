@@ -1,11 +1,9 @@
 package me.eranik.algorithm;
 
-import java.lang.Object;
-
 public class HashTable {
-    private LinkedList[] table = new LinkedList[1];
-    private int capacity = 1;
+    private int capacity = 10;
     private int size = 0;
+    private LinkedList[] table = new LinkedList[capacity];
 
     /**
      * Calculates a hash of a <code>key</code> string modulo <code>mod</code>.
@@ -17,7 +15,7 @@ public class HashTable {
     private int getHash(String key, int mod) {
         int hash = key.hashCode() % mod;
         if (hash < 0)
-            hash += capacity;
+            hash += mod;
         return hash;
     }
 
@@ -37,8 +35,8 @@ public class HashTable {
                 continue;
 
             Object[] arr = list.toArray();
-            for (int i = 0; i < arr.length; i++) {
-                Data data = (Data) arr[i];
+            for (Object obj : arr) {
+                Data data = (Data) obj;
                 int hash = getHash(data.key, newCapacity);
 
                 if (newTable[hash] == null)
@@ -87,7 +85,7 @@ public class HashTable {
         int index = table[hash].indexOf(new Data(key, null));
         String value = null;
         if (index != -1) {
-            value = ((Data) table[hash].get(index)).getValue();
+            value = ((Data) table[hash].get(index)).value;
         }
         return value;
     }
@@ -112,7 +110,7 @@ public class HashTable {
         int index = table[hash].indexOf(new Data(key, null));
         String res = null;
         if (index != -1) {
-            res = ((Data) table[hash].get(index)).getValue();
+            res = ((Data) table[hash].get(index)).value;
             table[hash].set(index, new Data(key, value));
         } else {
             size++;
@@ -137,7 +135,7 @@ public class HashTable {
         int index = table[hash].indexOf(new Data(key, null));
         String res = null;
         if (index != -1) {
-            res = ((Data) table[hash].get(index)).getValue();
+            res = ((Data) table[hash].get(index)).value;
             table[hash].remove(index);
             size--;
         }
@@ -160,8 +158,8 @@ public class HashTable {
      * Class for storing key-value pairs
      */
     private class Data {
-        private String key;
-        private String value;
+        public String key;
+        public String value;
 
         /**
          * Constructs a new key-value pair with the specified initial values
@@ -199,22 +197,6 @@ public class HashTable {
         @Override
         public int hashCode() {
             return key.hashCode();
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
         }
     }
 }

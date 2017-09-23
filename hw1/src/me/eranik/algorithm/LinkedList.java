@@ -16,7 +16,7 @@ public class LinkedList {
             end = begin;
         } else {
             Node node = new Node(null, end, obj);
-            end.setNext(node);
+            end.next = node;
             end = node;
         }
         size++;
@@ -30,7 +30,7 @@ public class LinkedList {
      */
     public Object get(int index) {
         Node node = getNodeByIndex(index);
-        return node == null ? null : node.getObject();
+        return node == null ? null : node.obj;
     }
 
     /**
@@ -42,7 +42,7 @@ public class LinkedList {
     public void set(int index, Object obj) {
         Node node = getNodeByIndex(index);
         if (node != null)
-            node.setObject(obj);
+            node.obj = obj;
     }
 
     /**
@@ -55,15 +55,15 @@ public class LinkedList {
         if (node == null)
             return;
 
-        if (node.getNext() != null) {
-            node.getNext().setPrev(node.getPrev());
+        if (node.next != null) {
+            node.next.prev = node.prev;
         } else {
-            end = node.getPrev();
+            end = node.prev;
         }
-        if (node.getPrev() != null) {
-            node.getPrev().setNext(node.getNext());
+        if (node.prev != null) {
+            node.prev.next = node.next;
         } else {
-            begin = node.getNext();
+            begin = node.next;
         }
         size--;
     }
@@ -79,9 +79,9 @@ public class LinkedList {
     public int indexOf(Object obj) {
         int index = 0;
         Node node = begin;
-        while (node != null && !node.getObject().equals(obj)) {
+        while (node != null && !node.obj.equals(obj)) {
             index++;
-            node = node.getNext();
+            node = node.next;
         }
         return index == size ? -1 : index;
     }
@@ -94,8 +94,8 @@ public class LinkedList {
      */
     public boolean contains(Object obj) {
         Node node = begin;
-        while (node != null && !node.getObject().equals(obj)) {
-            node = node.getNext();
+        while (node != null && !node.obj.equals(obj)) {
+            node = node.next;
         }
         return node != null;
     }
@@ -136,8 +136,8 @@ public class LinkedList {
     public Object[] toArray() {
         int index = 0;
         Object[] array = new Object[size];
-        for (Node node = begin; node != null; node = node.getNext()) {
-            array[index++] = node.getObject();
+        for (Node node = begin; node != null; node = node.next) {
+            array[index++] = node.obj;
         }
         return array;
     }
@@ -155,7 +155,7 @@ public class LinkedList {
 
         Node node = begin;
         while (index != 0) {
-            node = node.getNext();
+            node = node.next;
             index--;
         }
         return node;
@@ -179,30 +179,6 @@ public class LinkedList {
         Node(Node next, Node prev, Object obj) {
             this.next = next;
             this.prev = prev;
-            this.obj = obj;
-        }
-
-        public Node getNext() {
-            return next;
-        }
-
-        public void setNext(Node next) {
-            this.next = next;
-        }
-
-        public Node getPrev() {
-            return prev;
-        }
-
-        public void setPrev(Node prev) {
-            this.prev = prev;
-        }
-
-        public Object getObject() {
-            return obj;
-        }
-
-        public void setObject(Object obj) {
             this.obj = obj;
         }
     }
