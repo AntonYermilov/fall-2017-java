@@ -12,7 +12,7 @@ public class HashTable {
      * @param mod the value of module
      * @return the hash value modulo <code>mod</code>
      */
-    private int getHash(String key, int mod) {
+    protected int getHash(String key, int mod) {
         int hash = key.hashCode() % mod;
         if (hash < 0)
             hash += mod;
