@@ -250,6 +250,29 @@ public class HashTableTest {
     }
 
     @Test
+    public void testPutManyElementsWithCollision() {
+        for (int i = 0; i < 1000; i++) {
+            tableWithCollision.put(String.valueOf(i), String.valueOf(1000 + i));
+        }
+
+        assertEquals(tableWithCollision.size(), 1000);
+        for (int i = 0; i < 1000; i++) {
+            assertTrue(tableWithCollision.contains(String.valueOf(i)));
+            assertEquals(tableWithCollision.get(String.valueOf(i)), String.valueOf(1000 + i));
+        }
+
+        for (int i = 0; i < 1000; i++) {
+            tableWithCollision.put(String.valueOf(i), String.valueOf(2000 + i));
+        }
+
+        assertEquals(tableWithCollision.size(), 1000);
+        for (int i = 0; i < 1000; i++) {
+            assertTrue(tableWithCollision.contains(String.valueOf(i)));
+            assertEquals(tableWithCollision.get(String.valueOf(i)), String.valueOf(2000 + i));
+        }
+    }
+
+    @Test
     public void testRemoveFewElements() {
         table.put("abc", "1");
         table.put("def", "2");
@@ -269,6 +292,28 @@ public class HashTableTest {
         assertEquals(table.get("abc"), null);
         assertEquals(table.get("def"), null);
         assertEquals(table.get("ghi"), "3");
+    }
+
+    @Test
+    public void testRemoveFewElementsWithCollision() {
+        tableWithCollision.put("abc", "1");
+        tableWithCollision.put("def", "2");
+        tableWithCollision.put("ghi", "3");
+        tableWithCollision.remove("jkl");
+        assertEquals(tableWithCollision.size(), 3);
+        tableWithCollision.remove("abc");
+        assertEquals(tableWithCollision.size(), 2);
+        assertFalse(tableWithCollision.contains("abc"));
+        assertTrue(tableWithCollision.contains("def"));
+        assertTrue(tableWithCollision.contains("ghi"));
+        tableWithCollision.remove("def");
+        assertEquals(tableWithCollision.size(), 1);
+        assertFalse(tableWithCollision.contains("abc"));
+        assertFalse(tableWithCollision.contains("def"));
+        assertTrue(tableWithCollision.contains("ghi"));
+        assertEquals(tableWithCollision.get("abc"), null);
+        assertEquals(tableWithCollision.get("def"), null);
+        assertEquals(tableWithCollision.get("ghi"), "3");
     }
 
     @Test
@@ -326,5 +371,4 @@ public class HashTableTest {
         assertEquals(tableWithCollision.get("abc"), null);
         assertEquals(tableWithCollision.get("def"), null);
     }
-
 }
