@@ -33,27 +33,28 @@ public class Matrix {
      * from the center of matrix.
      */
     public void drawSpiral() {
-        int i = size / 2, j = size / 2;
-        for (int iter = 0; iter < (size + 1) / 2; iter++) {
-            if (iter == 0) {
+        int i = size / 2;
+        int j = size / 2;
+        for (int radius = 0; radius < (size + 1) / 2; radius++) {
+            if (radius == 0) {
                 System.out.print(matrix[i][j] + " ");
                 i--;
                 continue;
             }
 
-            for (int down = 0; down < iter * 2 - 1; down++) {
+            for (int down = 0; down < radius * 2 - 1; down++) {
                 System.out.print(matrix[i][j] + " ");
                 j++;
             }
-            for (int right = 0; right < iter * 2; right++) {
+            for (int right = 0; right < radius * 2; right++) {
                 System.out.print(matrix[i][j] + " ");
                 i++;
             }
-            for (int up = 0; up < iter * 2; up++) {
+            for (int up = 0; up < radius * 2; up++) {
                 System.out.print(matrix[i][j] + " ");
                 j--;
             }
-            for (int left = 0; left < iter * 2 + 1; left++) {
+            for (int left = 0; left < radius * 2 + 1; left++) {
                 System.out.print(matrix[i][j] + " ");
                 i--;
             }
