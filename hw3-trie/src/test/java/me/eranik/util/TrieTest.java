@@ -1,108 +1,111 @@
-package me.eranik.test;
+package me.eranik.util;
 
-import me.eranik.util.Trie;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TrieTest {
-    private Trie trie;
+class TrieTest {
+    Trie trie;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         trie = new Trie();
     }
 
     @Test
-    public void add() {
+    void testAdd() {
         assertTrue(trie.add("abacaba"));
         assertTrue(trie.add("abcba"));
         assertTrue(trie.add("12345helloWorld!"));
+        assertTrue(trie.add(""));
         assertFalse(trie.add("abcba"));
     }
 
     @Test
-    public void contains() {
+    void testContains() {
         trie.add("abacaba");
         trie.add("abcba");
         trie.add("12345!");
+        trie.add("");
         assertTrue(trie.contains("abcba"));
         assertTrue(trie.contains("abacaba"));
         assertTrue(trie.contains("12345!"));
+        assertTrue(trie.contains(""));
         assertFalse(trie.contains("12345"));
         assertFalse(trie.contains("hello"));
     }
 
     @Test
-    public void remove() {
+    void testRemove() {
         trie.add("abacaba");
         trie.add("abcba");
         trie.add("12345!");
+        trie.add("");
         assertTrue(trie.remove("abcba"));
         assertTrue(trie.remove("12345!"));
+        assertTrue(trie.remove(""));
         assertFalse(trie.remove("abcba"));
         assertFalse(trie.remove("ab"));
     }
 
     @Test
-    public void size() {
+    void testSize() {
         assertEquals(trie.size(), 0);
         trie.add("abacaba");
         trie.add("abcba");
         trie.add("12345!");
         trie.add("abcba");
-        assertEquals(trie.size(), 3);
+        trie.add("");
+        assertEquals(trie.size(), 4);
         trie.remove("abcba");
         trie.remove("def");
-        assertEquals(trie.size(), 2);
-
+        assertEquals(trie.size(), 3);
     }
 
     @Test
-    public void startsWith() {
+    void testStartsWith() {
         trie.add("abacaba");
         trie.add("abcba");
         trie.add("12345!");
         trie.add("abcba");
         trie.add("aaa");
+        trie.add("");
         assertEquals(trie.startsWith("ab"), 2);
         assertEquals(trie.startsWith("a"), 3);
-        assertEquals(trie.startsWith(""), 4);
+        assertEquals(trie.startsWith(""), 5);
         assertEquals(trie.startsWith("0"), 0);
     }
 
     @Test
-    public void serialize() throws IOException {
+    void testSerializeAndDeserialize() throws IOException, ClassNotFoundException {
         trie.add("abacaba");
         trie.add("abcba");
         trie.add("12345!");
         trie.add("abcba");
         trie.add("aaa");
+        trie.add("");
+
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         trie.serialize(output);
-        String[] words = output.toString().split("\n");
-        Arrays.sort(words);
-        assertArrayEquals(words, new String[]{"12345!", "aaa", "abacaba", "abcba"});
-    }
 
-    @Test
-    public void deserialize() throws IOException {
-        ByteArrayInputStream input = new ByteArrayInputStream("hello\nworld this\nis trie".getBytes());
+        trie = new Trie();
+        assertEquals(trie.size(), 0);
+
+        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
         trie.deserialize(input);
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        trie.serialize(output);
-        String[] words = output.toString().split("\n");
-        Arrays.sort(words);
-        assertArrayEquals(words, new String[]{"hello", "is", "this", "trie", "world"});
+        assertEquals(trie.size(), 5);
+        assertTrue(trie.contains("abacaba"));
+        assertTrue(trie.contains("abcba"));
+        assertTrue(trie.contains("12345!"));
+        assertTrue(trie.contains("aaa"));
+        assertTrue(trie.contains(""));
     }
 
 }
