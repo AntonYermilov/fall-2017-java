@@ -1,5 +1,7 @@
 package me.eranik.util;
 
+import org.jetbrains.annotations.*;
+
 /**
  * Stores keys in binary search tree. Supports adding new values.
  * Stored keys should implement interface {@code Comparable}.
@@ -25,7 +27,7 @@ public class Set<T extends Comparable<? super T>> {
      * @param key element to be added
      * @return {@code true} if key didn't exist before; {@code false} otherwise
      */
-    public boolean add(T key) {
+    public boolean add(@NotNull T key) {
         if (contains(key))
             return false;
         if (root == null) {
@@ -52,7 +54,7 @@ public class Set<T extends Comparable<? super T>> {
      * @param key element to be checked
      * @return {@code true} if element exists; {@code false} otherwise
      */
-    public boolean contains(T key) {
+    public boolean contains(@NotNull T key) {
         Node node = root;
         while (node != null) {
             int cmp = node.key.compareTo(key);
