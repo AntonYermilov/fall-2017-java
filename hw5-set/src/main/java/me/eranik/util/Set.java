@@ -9,17 +9,6 @@ import org.jetbrains.annotations.*;
  */
 public class Set<T extends Comparable<? super T>> {
 
-    private class Node {
-        private Node left = null;
-        private Node right = null;
-        private int weight = 1;
-        private T key;
-
-        private Node(T key) {
-            this.key = key;
-        }
-    }
-
     private Node root = null;
 
     /**
@@ -72,6 +61,17 @@ public class Set<T extends Comparable<? super T>> {
      */
     public int size() {
         return root == null ? 0 : root.weight;
+    }
+
+    private class Node {
+        private Node left = null;
+        private Node right = null;
+        private int weight = 1;
+        private T key;
+
+        private Node(T key) {
+            this.key = key;
+        }
     }
 
 }
