@@ -57,7 +57,6 @@ public class Trie implements Serializable {
         Node node = root;
         for (int i = 0; i < word.length(); i++) {
             node.weight--;
-
             node = node.move(word.charAt(i));
         }
         node.weight--;
