@@ -5,42 +5,6 @@ import java.util.HashMap;
 
 public class Trie implements Serializable {
 
-    /**
-     * Class {@code Node} stores such information as links to children,
-     * number of strings, that starts with corresponding prefix, and
-     * special flag to tell if current node is terminal.
-     *
-     * Links to children are stored as hash map of characters, each link
-     * matches a special character.
-     */
-    private class Node implements Serializable {
-        private HashMap<Character, Node> to = new HashMap<>();
-        private boolean isEnd = false;
-        private int weight = 0;
-
-        /**
-         * Moves you to another node through given symbol. If link to another
-         * node does not exists, creates new one.
-         * @param symbol symbol to go through
-         * @return node corresponding to the path by symbol
-         */
-        private Node move(char symbol) {
-            if (!to.containsKey(symbol))
-                to.put(symbol, new Node());
-            return to.get(symbol);
-        }
-
-        /**
-         * Tells if move through specified symbol is valid and if the next node
-         * to move exists.
-         * @param symbol symbol to go through
-         * @return true if link exists; false otherwise
-         */
-        private boolean canMove(char symbol) {
-            return to.containsKey(symbol);
-        }
-    }
-
     private Node root = new Node();
 
     /**
@@ -143,6 +107,42 @@ public class Trie implements Serializable {
         ObjectInputStream ois = new ObjectInputStream(in);
         root = ((Trie) ois.readObject()).root;
         ois.close();
+    }
+    
+    /**
+     * Class {@code Node} stores such information as links to children,
+     * number of strings, that starts with corresponding prefix, and
+     * special flag to tell if current node is terminal.
+     *
+     * Links to children are stored as hash map of characters, each link
+     * matches a special character.
+     */
+    private class Node implements Serializable {
+        private HashMap<Character, Node> to = new HashMap<>();
+        private boolean isEnd = false;
+        private int weight = 0;
+
+        /**
+         * Moves you to another node through given symbol. If link to another
+         * node does not exists, creates new one.
+         * @param symbol symbol to go through
+         * @return node corresponding to the path by symbol
+         */
+        private Node move(char symbol) {
+            if (!to.containsKey(symbol))
+                to.put(symbol, new Node());
+            return to.get(symbol);
+        }
+
+        /**
+         * Tells if move through specified symbol is valid and if the next node
+         * to move exists.
+         * @param symbol symbol to go through
+         * @return true if link exists; false otherwise
+         */
+        private boolean canMove(char symbol) {
+            return to.containsKey(symbol);
+        }
     }
 
 }
