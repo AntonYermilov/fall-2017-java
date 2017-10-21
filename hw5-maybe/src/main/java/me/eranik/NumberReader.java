@@ -7,11 +7,10 @@ import java.util.Scanner;
 
 public class NumberReader {
 
-
     /**
      * Reads numbers from the input file and writes their squares to the output file.
      * @param args names of input and output files
-     * @throws IOException
+     * @throws IOException if input or output file does not exist.
      */
     public static void main(String[] args) throws IOException {
         if (args.length < 2) {
@@ -38,7 +37,7 @@ public class NumberReader {
             Maybe<Integer> value = Maybe.convertToInteger(next).map(x -> x * x);
             try {
                 output.write(value.get() + "\n");
-            } catch (MaybeException e) {
+            } catch (AccessToNothingException e) {
                 output.write("null\n");
             }
         }

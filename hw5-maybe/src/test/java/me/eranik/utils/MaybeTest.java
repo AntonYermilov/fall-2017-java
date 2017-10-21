@@ -6,22 +6,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MaybeTest {
 
-    Maybe<Integer> justInteger = Maybe.just(5);
-    Maybe<String> justString = Maybe.just("abc");
+    private Maybe<Integer> justInteger = Maybe.just(5);
+    private Maybe<String> justString = Maybe.just("abc");
 
-    Maybe<Integer> nothingInteger = Maybe.nothing();
-    Maybe<String> nothingString = Maybe.nothing();
+    private Maybe<Integer> nothingInteger = Maybe.nothing();
+    private Maybe<String> nothingString = Maybe.nothing();
 
     @Test
-    void testGetJust() throws MaybeException {
+    void testGetJust() throws AccessToNothingException {
         assertEquals(5, justInteger.get().intValue());
         assertEquals("abc", justString.get());
     }
 
     @Test
     void testGetNothing() {
-        assertThrows(MaybeException.class, nothingInteger::get);
-        assertThrows(MaybeException.class, nothingString::get);
+        assertThrows(AccessToNothingException.class, nothingInteger::get);
+        assertThrows(AccessToNothingException.class, nothingString::get);
     }
 
     @Test
@@ -37,7 +37,7 @@ class MaybeTest {
     }
 
     @Test
-    void testMapJust() throws MaybeException {
+    void testMapJust() throws AccessToNothingException {
         Maybe<String> justNewString = justInteger.map(x -> String.valueOf(x * x));
         Maybe<Integer> justNewInteger = justString.map(String::length);
 
@@ -57,7 +57,7 @@ class MaybeTest {
     }
 
     @Test
-    void convertToInteger() throws MaybeException {
+    void convertToInteger() throws AccessToNothingException {
         String number = "123";
         String word = "abc";
 

@@ -15,6 +15,8 @@ repositories {
 }
 
 apply plugin: 'java'
+sourceCompatibility = 1.8
+
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 dependencies {
