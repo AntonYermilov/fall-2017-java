@@ -8,8 +8,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+/**
+ * Finds all zip archives and extracts files that match specified 
+ * regular expression.
+ */
 public class UnzipRegex {
 
     private static byte[] buffer = new byte[1024];
@@ -41,7 +46,7 @@ public class UnzipRegex {
 
     private static void findArchives(File file, ArrayList<ZipFile> archives) {
         if (!file.exists())
-            return ;
+            return;
 
         if (file.isDirectory()) {
             File[] children = file.listFiles();
@@ -50,9 +55,10 @@ public class UnzipRegex {
             for (File child : children) {
                 findArchives(child, archives);
             }
-        } else if (file.getName().endsWith(".zip")) {
+        } else {
             try {
                 archives.add(new ZipFile(file.toString()));
+            } catch (ZipException ignored) {
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
