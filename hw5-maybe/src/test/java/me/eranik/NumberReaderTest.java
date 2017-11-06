@@ -16,6 +16,7 @@ class NumberReaderTest {
 
     @BeforeEach
     void createFiles() throws IOException {
+        Paths.get("src", "test", "resources").toFile().mkdir();
         input = Paths.get("src", "test", "resources", "input.txt").toFile();
         input.createNewFile();
         output = Paths.get("src", "test", "resources", "output.txt").toFile();
