@@ -1,5 +1,7 @@
 package me.eranik.functional;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Wrapper over the function f :: T -> U -> V.
  * @param <T> type of first argument
@@ -21,10 +23,10 @@ public abstract class Function2<T, U, V> {
      * @param <W> type of composition result
      * @return function h :: T -> U -> W, such that h = g(f)
      */
-    public <W> Function2<T, U, W> compose(Function1<? super V, ? extends W> g) {
+    public <W> Function2<T, U, W> compose(@NotNull Function1<? super V, ? extends W> g) {
         return new Function2<T, U, W>() {
             @Override
-            public W apply(T x, U y) {
+            public W apply(@NotNull T x, @NotNull U y) {
                 return g.apply(Function2.this.apply(x, y));
             }
         };
@@ -35,10 +37,10 @@ public abstract class Function2<T, U, V> {
      * @param x value to be bound with
      * @return function of one argument, that is similar to f(_, y)
      */
-    public Function1<U, V> bind1(T x) {
+    public Function1<U, V> bind1(@NotNull T x) {
         return new Function1<U, V>() {
             @Override
-            public V apply(U y) {
+            public V apply(@NotNull U y) {
                 return Function2.this.apply(x, y);
             }
         };
@@ -49,10 +51,10 @@ public abstract class Function2<T, U, V> {
      * @param y value to be bound with
      * @return function of one argument, that is similar to f(x, _)
      */
-    public Function1<T, V> bind2(U y) {
+    public Function1<T, V> bind2(@NotNull U y) {
         return new Function1<T, V>() {
             @Override
-            public V apply(T x) {
+            public V apply(@NotNull T x) {
                 return Function2.this.apply(x, y);
             }
         };
@@ -63,7 +65,7 @@ public abstract class Function2<T, U, V> {
      * @param y value to be substituted
      * @return function of one argument, that is similar to f(x, _)
      */
-    public Function1<T, V> curry(U y) {
+    public Function1<T, V> curry(@NotNull U y) {
         return bind2(y);
     }
 }

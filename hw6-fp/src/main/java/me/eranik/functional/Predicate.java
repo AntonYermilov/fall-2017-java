@@ -1,5 +1,7 @@
 package me.eranik.functional;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Wrapper over the predicate -- special function that returns True
  * if argument matches the specified condition and False otherwise.
@@ -32,7 +34,7 @@ public abstract class Predicate<T> extends Function1<T, Boolean> {
      * @param x argument to be applied
      * @return the result of the application
      */
-    public abstract Boolean apply(T x);
+    public abstract Boolean apply(@NotNull T x);
 
     /**
      * Returns predicate that equals to the {@code logical or}
@@ -41,10 +43,10 @@ public abstract class Predicate<T> extends Function1<T, Boolean> {
      * @return predicate that equals to the {@code logical or}
      * of this predicate and specified one
      */
-    public Predicate<T> or(Predicate<? super T> pred) {
+    public Predicate<T> or(@NotNull Predicate<? super T> pred) {
         return new Predicate<T>() {
             @Override
-            public Boolean apply(T x) {
+            public Boolean apply(@NotNull T x) {
                 return Predicate.this.apply(x) || pred.apply(x);
             }
         };
@@ -57,10 +59,10 @@ public abstract class Predicate<T> extends Function1<T, Boolean> {
      * @return predicate that equals to the {@code logical and}
      * of this predicate and specified one
      */
-    public Predicate<T> and(Predicate<? super T> pred) {
+    public Predicate<T> and(@NotNull Predicate<? super T> pred) {
         return new Predicate<T>() {
             @Override
-            public Boolean apply(T x) {
+            public Boolean apply(@NotNull T x) {
                 return Predicate.this.apply(x) && pred.apply(x);
             }
         };
@@ -75,7 +77,7 @@ public abstract class Predicate<T> extends Function1<T, Boolean> {
     public Predicate<T> not() {
         return new Predicate<T>() {
             @Override
-            public Boolean apply(T x) {
+            public Boolean apply(@NotNull T x) {
                 return !Predicate.this.apply(x);
             }
         };

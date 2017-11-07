@@ -1,5 +1,7 @@
 package me.eranik.functional;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -16,8 +18,8 @@ public class Collections {
      * @param <U> type of result values
      * @return the array of resulting values
      */
-    public static <T, U> ArrayList<U> map(Function1<? super T, ? extends U> func,
-                                          Iterable<? extends T> values) {
+    public static <T, U> ArrayList<U> map(@NotNull Function1<? super T, ? extends U> func,
+                                          @NotNull Iterable<? extends T> values) {
         ArrayList<U> newValues = new ArrayList<>();
         for (T value : values) {
             newValues.add(func.apply(value));
@@ -33,8 +35,8 @@ public class Collections {
      * @param <T> type of values in the specified container
      * @return the array of values that correspond to the specified predicate
      */
-    public static <T> ArrayList<T> filter(Predicate<? super T> pred,
-                                          Iterable<? extends T> values) {
+    public static <T> ArrayList<T> filter(@NotNull Predicate<? super T> pred,
+                                          @NotNull Iterable<? extends T> values) {
         ArrayList<T> newValues = new ArrayList<>();
         for (T value : values) {
             if (pred.apply(value)) {
@@ -53,8 +55,8 @@ public class Collections {
      * @return the longest prefix of the specified container of elements that
      * satisfy specified predicate
      */
-    public static <T> ArrayList<T> takeWhile(Predicate<? super T> pred,
-                                             Iterable<? extends T> values) {
+    public static <T> ArrayList<T> takeWhile(@NotNull Predicate<? super T> pred,
+                                             @NotNull Iterable<? extends T> values) {
         ArrayList<T> newValues = new ArrayList<>();
         for (T value : values) {
             if (!pred.apply(value)) {
@@ -74,13 +76,13 @@ public class Collections {
      * @return the longest prefix of the specified container of elements that
      * do not satisfy specified predicate
      */
-    public static <T> ArrayList<T> takeUnless(Predicate<? super T> pred,
-                                              Iterable<? extends T> values) {
+    public static <T> ArrayList<T> takeUnless(@NotNull Predicate<? super T> pred,
+                                              @NotNull Iterable<? extends T> values) {
         return takeWhile(pred.not(), values);
     }
 
-    private static <T, U> U applyBackwards(Function2<? super T, ? super U, ? extends U> func,
-                                           U init, Iterator<? extends T> iterator) {
+    private static <T, U> U applyBackwards(@NotNull Function2<? super T, ? super U, ? extends U> func,
+                                           @NotNull U init, @NotNull Iterator<? extends T> iterator) {
         if (iterator.hasNext()) {
             return func.apply(iterator.next(), applyBackwards(func, init, iterator));
         }
@@ -97,8 +99,8 @@ public class Collections {
      * @param <U> type of reduction result
      * @return result of the container's reduction
      */
-    public static <T, U> U foldr(Function2<? super T, ? super U, ? extends U> func,
-                                 U init, Iterable<? extends T> values) {
+    public static <T, U> U foldr(@NotNull Function2<? super T, ? super U, ? extends U> func,
+                                 @NotNull U init, @NotNull Iterable<? extends T> values) {
         return applyBackwards(func, init, values.iterator());
     }
 
@@ -112,8 +114,8 @@ public class Collections {
      * @param <U> type of values in the specified container
      * @return result of the container's reduction
      */
-    public static <T, U> T foldl(Function2<? super T, ? super U, ? extends T> func,
-                                 T init, Iterable<? extends U> values) {
+    public static <T, U> T foldl(@NotNull Function2<? super T, ? super U, ? extends T> func,
+                                 @NotNull T init, @NotNull Iterable<? extends U> values) {
         T result = init;
         for (U value : values) {
             result = func.apply(result, value);

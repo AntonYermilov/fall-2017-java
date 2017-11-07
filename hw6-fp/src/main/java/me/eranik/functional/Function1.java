@@ -1,5 +1,7 @@
 package me.eranik.functional;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Wrapper over the function f :: T -> U.
  * @param <T> type of argument
@@ -19,10 +21,10 @@ public abstract class Function1<T, U> {
      * @param <V> type of composition result
      * @return function h :: T -> V, such that h = g(f)
      */
-    public <V> Function1<T, V> compose(Function1<? super U, ? extends V> g) {
+    public <V> Function1<T, V> compose(@NotNull Function1<? super U, ? extends V> g) {
         return new Function1<T, V>() {
             @Override
-            public V apply(T x) {
+            public V apply(@NotNull T x) {
                  return g.apply(Function1.this.apply(x));
             }
         };
