@@ -9,24 +9,32 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class Predicate<T> extends Function1<T, Boolean> {
     /**
-     * Predicate that always returns true.
+     * Returns predicate that for any argument returns true.
+     * @param <T> type of argument
+     * @return predicate that always returns true
      */
-    public static final Predicate ALWAYS_TRUE = new Predicate() {
-        @Override
-        public Boolean apply(Object x) {
-            return true;
-        }
-    };
+    public static <T> Predicate<T> ALWAYS_TRUE() {
+        return new Predicate<T>() {
+            @Override
+            public Boolean apply(T x) {
+                return true;
+            }
+        };
+    }
 
     /**
-     * Predicate that always returns false.
+     * Returns predicate that for any argument returns false.
+     * @param <T> type of argument
+     * @return predicate that always returns false
      */
-    public static final Predicate ALWAYS_FALSE = new Predicate() {
-        @Override
-        public Boolean apply(Object x) {
-            return false;
-        }
-    };
+    public static <T> Predicate<T> ALWAYS_FALSE() {
+        return new Predicate<T>() {
+            @Override
+            public Boolean apply(T x) {
+                return false;
+            }
+        };
+    }
 
     /**
      * Returns the result of applying function to the specified

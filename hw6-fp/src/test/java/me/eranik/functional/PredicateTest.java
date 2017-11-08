@@ -64,7 +64,7 @@ class PredicateTest {
             }
         };
 
-        assertTrue(((Predicate<String>) f.ALWAYS_TRUE).or(f).apply("aba"));
+        assertTrue(Predicate.<String>ALWAYS_TRUE().or(f).apply("aba"));
     }
 
     @Test
@@ -77,7 +77,7 @@ class PredicateTest {
         };
 
         assertThrows(StringIndexOutOfBoundsException.class, () -> {
-            ((Predicate<String>) f.ALWAYS_FALSE).or(f).apply("aba");
+            Predicate.<String>ALWAYS_FALSE().or(f).apply("aba");
         });
     }
 
@@ -140,7 +140,7 @@ class PredicateTest {
             }
         };
 
-        assertFalse(((Predicate<String>) f.ALWAYS_FALSE).and(f).apply("aba"));
+        assertFalse(Predicate.<String>ALWAYS_FALSE().and(f).apply("aba"));
     }
 
     @Test
@@ -153,7 +153,7 @@ class PredicateTest {
         };
 
         assertThrows(StringIndexOutOfBoundsException.class, () -> {
-            ((Predicate<String>) f.ALWAYS_TRUE).and(f).apply("aba");
+            Predicate.<String>ALWAYS_TRUE().and(f).apply("aba");
         });
     }
 
