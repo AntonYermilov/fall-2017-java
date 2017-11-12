@@ -7,6 +7,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.Function;
 
+/**
+ * Implementation of MyTreeSetInterface using binary search tree.
+ * @param <K> type of the stored keys
+ */
 public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K> {
 
     private int size = 0;
@@ -14,10 +18,17 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
     private Comparator<? super K> comparator;
     private boolean ascendingOrder = true;
 
+    /**
+     * Constructs set with default comparator if stored keys implement Comparable.
+     */
     public MyTreeSet() {
         this.comparator = (o1, o2) -> ((Comparable) o1).compareTo(o2);
     }
 
+    /**
+     * Constructs set with specified comparator.
+     * @param comparator specified comparator for comparing stored keys
+     */
     public MyTreeSet(@NotNull Comparator<? super K> comparator) {
         this.comparator = comparator;
     }
@@ -29,16 +40,29 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
         this.ascendingOrder = set.ascendingOrder ^ changeOrder;
     }
 
+    /**
+     * Returns number of stored in set elements.
+     * @return number of stored in set elements
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Tells if set is empty.
+     * @return tells if set is empty
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * Adds specified key to set.
+     * @param key specified key
+     * @return {@code true} if this set did not already contain specified key
+     */
     @Override
     public boolean add(@NotNull K key) {
         if (root == null) {
@@ -71,12 +95,22 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
         return true;
     }
 
+    /**
+     * Checks if specified key contains in set.
+     * @param key specified key
+     * @return true if set contains specified key
+     */
     @Override
     public boolean contains(@NotNull Object key) {
         Node node = findNode(key);
         return node != null;
     }
 
+    /**
+     * Removes specified key from set.
+     * @param key specified key
+     * @return true if set contained specified key
+     */
     @Override
     public boolean remove(@NotNull Object key) {
         Node node = findNode(key);
@@ -88,33 +122,60 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
         return true;
     }
 
+    /**
+     * Return an iterator over the elements in this set in ascending order.
+     * @return an iterator over the elements in this set in ascending order
+     */
     @Override
     public Iterator<K> iterator() {
         return new MyTreeSetIterator(false);
     }
 
+    /**
+     * Returns an iterator over the elements in this set in descending order.
+     * @return an iterator over the elements in this set in descending order
+     */
     @Override
     public Iterator<K> descendingIterator() {
         return new MyTreeSetIterator(true);
     }
 
+    /**
+     * Returns set that contains the same elements in descending order.
+     * @return set that contains the same elements in descending order
+     */
     @Override
     public MyTreeSetInterface<K> descendingSet() {
         return new MyTreeSet<>(this, true);
     }
 
+    /**
+     * Returns the least element of the set.
+     * @return the least element of the set
+     */
     @Override
     public K first() {
         Node node = ascendingOrder ? firstNode() : lastNode();
         return node == null ? null : node.key;
     }
 
+    /**
+     * Returns the greatest element of the set.
+     * @return the greatest element of the set
+     */
     @Override
     public K last() {
         Node node = ascendingOrder ? lastNode() : firstNode();
         return node == null ? null : node.key;
     }
 
+    /**
+     * Returns the greatest element among those that are strictly less
+     * than specified key, or null if there are no such elements.
+     * @param key specified key
+     * @return the greatest element among those that are strictly less
+     * than specified key, or null if there are no such elements
+     */
     @Override
     public K lower(@NotNull K key) {
         Function<K, Boolean> predicate = x ->
@@ -123,6 +184,13 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
         return node == null ? null : node.key;
     }
 
+    /**
+     * Returns the greatest element among those that are less than or equal
+     * to the specified key, or null if there are no such elements.
+     * @param key specified key
+     * @return the greatest element among those that are less than or equal
+     * to the specified key, or null if there are no such elements
+     */
     @Override
     public K floor(@NotNull K key) {
         Function<K, Boolean> predicate = x ->
@@ -131,6 +199,13 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
         return node == null ? null : node.key;
     }
 
+    /**
+     * Returns the least element among those that are greater than or equal
+     * to the specified key, or null if there are no such elements.
+     * @param key specified key
+     * @return the least element among those that are greater than or equal
+     * to the specified key, or null if there are no such elements
+     */
     @Override
     public K ceiling(@NotNull K key) {
         Function<K, Boolean> predicate = x ->
@@ -139,6 +214,13 @@ public class MyTreeSet<K> extends AbstractSet<K> implements MyTreeSetInterface<K
         return node == null ? null : node.key;
     }
 
+    /**
+     * Returns the least element among those that are strictly greater
+     * than specified key, or null if there are no such elements.
+     * @param key specified key
+     * @return the least element among those that are strictly greater
+     * than specified key, or null if there are no such elements
+     */
     @Override
     public K higher(@NotNull K key) {
         Function<K, Boolean> predicate = x ->
