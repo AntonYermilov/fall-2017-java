@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw4-zip.iml" filepath="$PROJECT_DIR$/.idea/modules/hw4-zip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw4-zip_main.iml" filepath="$PROJECT_DIR$/.idea/modules/hw4-zip_main.iml" group="hw4-zip" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw4-zip_test.iml" filepath="$PROJECT_DIR$/.idea/modules/hw4-zip_test.iml" group="hw4-zip" />
+    </modules>
+  </component>
+</project>
