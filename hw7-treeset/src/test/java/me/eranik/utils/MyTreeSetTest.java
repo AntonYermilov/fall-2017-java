@@ -108,7 +108,7 @@ class MyTreeSetTest {
     }
 
     @Test
-    void testAddEqualsIntegerSet() {
+    void testAddEqualIntegerSet() {
         intSet.add(1);
         intSet.add(3);
         intSet.add(2);
@@ -127,7 +127,7 @@ class MyTreeSetTest {
     }
 
     @Test
-    void testAddEqualsStringSet() {
+    void testAddEqualStringSet() {
         strSet.add("abc");
         strSet.add("abc");
         strSet.add("qwer");
