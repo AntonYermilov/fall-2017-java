@@ -1,7 +1,6 @@
 package me.eranik.sp;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -78,6 +77,6 @@ public final class FirstPartTasks {
 
     // Вернуть поток из объектов класса 'clazz'
     public static <R> Stream<R> filterIsInstance(Stream<?> stream, Class<R> clazz) {
-        return stream.filter(clazz::isInstance).map(clazz::cast);gi
+        return stream.filter(clazz::isInstance).map(clazz::cast);
     }
 }
