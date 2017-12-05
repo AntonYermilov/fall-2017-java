@@ -2,6 +2,10 @@ package me.eranik.math;
 
 import me.eranik.util.Stack;
 
+/**
+ * Implements algorithms of transforming expressions to reversed polish notation
+ * and calculating this expressions.
+ */
 public class Calculator {
     private Stack<Character> operations;
     private Stack<Double> operands;
@@ -83,6 +87,12 @@ public class Calculator {
         return operands.pop();
     }
 
+    /**
+     * Checks if received string is correct mathematical expression.
+     * @param expression specified expression
+     * @return {@code true} if specified string satisfies the correct mathematical
+     * expression; {@code false} otherwise
+     */
     private boolean checkCorrectness(String expression) {
         expression = "0+" + expression + "+0";
 
@@ -124,7 +134,7 @@ public class Calculator {
 
     private int getPriority(char operation) {
         switch (operation) {
-            case '+' : return 1;
+            case '+' :
             case '-' : return 1;
             case '*' : return 2;
             case '/' : return 2;
@@ -154,6 +164,12 @@ public class Calculator {
         return "+-*/".indexOf(symbol) != -1;
     }
 
+    /**
+     * This exception is thrown if specified string does not satisfy correct mathematical
+     * expression.
+     * Correct expression can consist of operations +, -, * or /, parentheses and integers
+     * between 0 and 9 inclusive.
+     */
     public static class ParseException extends Exception {
         private ParseException() {
             super("Specified expression is not a correct expression in infix form.\n" +
