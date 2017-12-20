@@ -14,8 +14,8 @@ public class SecondPartTasksTest {
                 "src/test/resources/b.txt",
                 "src/test/resources/c.txt"),
                 "cat");
-        List<String> expected = Arrays.asList("cats", "cattles", "catching", "cats.",
-                "cats", "categories?");
+        List<String> expected = Arrays.asList("cats and cattles", "as they love catching", "I love cats.",
+                "And cats love me.", "about theory of categories?");
 
         Collections.sort(actual);
         Collections.sort(expected);

@@ -20,8 +20,7 @@ public final class SecondPartTasks {
             } catch (IOException e) {
                 return Stream.of("");
             }
-        }).flatMap(line -> Arrays.stream(line.split(" ")))
-                .filter(str -> str.contains(sequence)).collect(Collectors.toList());
+        }).filter(str -> str.contains(sequence)).collect(Collectors.toList());
     }
 
     // В квадрат с длиной стороны 1 вписана мишень.

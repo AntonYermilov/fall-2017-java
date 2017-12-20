@@ -46,7 +46,7 @@ public final class FirstPartTasks {
 
     // Число повторяющихся альбомов в потоке
     public static long countAlbumDuplicates(Stream<Album> albums) {
-        return albums.collect(Collectors.groupingBy(album -> album.getName() + "#" + album.getName()))
+        return albums.collect(Collectors.groupingBy(album -> album.getName() + "#" + album.getArtist().getName()))
                 .entrySet().stream().filter(album -> album.getValue().size() > 1).count();
     }
 
