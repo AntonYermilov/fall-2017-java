@@ -77,9 +77,9 @@ public class Calculator {
             if (isDigit(expr.charAt(index))) {
                 operands.push(toDigit(expr.charAt(index)));
             } else {
-                double rightOp = operands.pop();
-                double leftOp = operands.pop();
-                operands.push(apply(expr.charAt(index), leftOp, rightOp));
+                double rightOperand = operands.pop();
+                double leftOperand = operands.pop();
+                operands.push(apply(expr.charAt(index), leftOperand, rightOperand));
             }
             index++;
         }
@@ -135,19 +135,27 @@ public class Calculator {
     private int getPriority(char operation) {
         switch (operation) {
             case '+' :
-            case '-' : return 1;
-            case '*' : return 2;
-            case '/' : return 2;
-            default  : return 0;
+            case '-' : 
+                return 1;
+            case '*' : 
+                return 2;
+            case '/' : 
+                return 2;
+            default  : 
+                return 0;
         }
     }
 
-    private double apply(char operation, double leftOp, double rightOp) {
+    private double apply(char operation, double leftOperand, double rightOperand) {
         switch (operation) {
-            case '+' : return leftOp + rightOp;
-            case '-' : return leftOp - rightOp;
-            case '*' : return leftOp * rightOp;
-            case '/' : return leftOp / rightOp;
+            case '+' : 
+                return leftOperand + rightOperand;
+            case '-' : 
+                return leftOperand - rightOperand;
+            case '*' : 
+                return leftOperand * rightOperand;
+            case '/' : 
+                return leftOperand / rightOperand;
         }
         throw new UnsupportedOperationException();
     }
@@ -175,7 +183,8 @@ public class Calculator {
             super("Specified expression is not a correct expression in infix form.\n" +
                     "Correct expression can contain only digits, parentheses and " +
                     "binary operations '+', '-', '*' or '/'.\n" +
-                    "In particular, all number must be from 0 to 9.");
+                    "In particular, all numbers must be from 0 to 9.\n" +
+                    "Try again.");
         }
     }
 

@@ -1,5 +1,8 @@
 package me.eranik.util;
 
+/**
+ * This interface contains description of stack functionality.
+ */
 public interface Stack<T> {
     /**
      * Returns size of the stack.
