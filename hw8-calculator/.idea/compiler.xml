@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="test-hashmap_main" target="1.8" />
-      <module name="test-hashmap_test" target="1.8" />
+      <module name="hw8-calculator_main" target="1.8" />
+      <module name="hw8-calculator_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

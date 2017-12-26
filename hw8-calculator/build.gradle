@@ -1,4 +1,4 @@
-group 'me.eranik'
+group 'eranik.me'
 version '1.0'
 
 buildscript {
@@ -15,11 +15,14 @@ repositories {
 }
 
 apply plugin: 'java'
+sourceCompatibility = 1.8
+
 apply plugin: 'org.junit.platform.gradle.plugin'
 
 dependencies {
     compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
 
+    testCompile 'org.mockito:mockito-core:2.12.0'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.0.1'
     testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.0.0'
     testCompile group: 'junit', name: 'junit', version: '4.12'
