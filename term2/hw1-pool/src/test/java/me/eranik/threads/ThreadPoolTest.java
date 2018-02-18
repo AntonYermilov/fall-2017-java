@@ -105,10 +105,8 @@ class ThreadPoolTest {
         assertFalse(task4.isReady());
 
         pool.shutdown();
-        Thread.sleep(10000);
+        Thread.sleep(5000);
 
-        assertTrue(task1.isReady());
-        assertTrue(task2.isReady());
         assertFalse(task3.isReady());
         assertFalse(task4.isReady());
 
