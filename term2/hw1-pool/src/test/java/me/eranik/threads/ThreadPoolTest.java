@@ -3,6 +3,7 @@ package me.eranik.threads;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -85,30 +86,35 @@ class ThreadPoolTest {
     }
 
     @Test
-    void testShutdown() throws InterruptedException {
+    @SuppressWarnings("unchecked")
+    void testShutdown() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
         Supplier<String> job = () -> {
-            while (!Thread.interrupted()) {
+            while (true) {
                 Thread.yield();
             }
-            return "I have finished!";
         };
+
+        Thread.sleep(5000);
 
         ThreadPool<String> pool = new ThreadPool<>(2);
         LightFuture<String> task1 = pool.addTask(job);
         LightFuture<String> task2 = pool.addTask(job);
-        LightFuture<String> task3 = pool.addTask(job);
-        LightFuture<String> task4 = pool.addTask(job);
 
         assertFalse(task1.isReady());
         assertFalse(task2.isReady());
-        assertFalse(task3.isReady());
-        assertFalse(task4.isReady());
+
+        Field threads = pool.getClass().getDeclaredField("threads");
+        threads.setAccessible(true);
+
+        for (Thread thread : (Thread[]) threads.get(pool)) {
+            assertFalse(thread.isInterrupted());
+        }
 
         pool.shutdown();
-        Thread.sleep(5000);
 
-        assertFalse(task3.isReady());
-        assertFalse(task4.isReady());
+        for (Thread thread : (Thread[]) threads.get(pool)) {
+            assertTrue(thread.isInterrupted());
+        }
 
         System.out.println("testShutdown: Successful");
         System.out.flush();
