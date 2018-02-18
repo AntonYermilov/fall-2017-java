@@ -17,6 +17,9 @@ class ThreadPoolTest {
         assertEquals("Hello world!", task1.get());
         assertEquals("world!", task2.get());
         assertEquals("100500", task3.get());
+
+        System.out.println("testTasksWithOneThread: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -28,6 +31,9 @@ class ThreadPoolTest {
         assertEquals("Hello world!", task1.get());
         assertEquals("world!", task2.get());
         assertEquals("100500", task3.get());
+
+        System.out.println("testTasksWithTwoThreads: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -39,6 +45,9 @@ class ThreadPoolTest {
         assertEquals("Hello world!", task1.get());
         assertEquals("world!", task2.get());
         assertEquals("100500", task3.get());
+
+        System.out.println("testTasksWithManyThreads: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -53,6 +62,9 @@ class ThreadPoolTest {
         for (int i = 0; i < 1000; i++) {
             assertEquals(i * i, tasks[i].get().intValue());
         }
+
+        System.out.println("testManyTasksWithOneThread: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -67,31 +79,9 @@ class ThreadPoolTest {
         for (int i = 0; i < 1000; i++) {
             assertEquals(i * i, tasks[i].get().intValue());
         }
-    }
 
-    //TODO BigTasks
-
-    @Test
-    void testTaskCompletion() {
-        Supplier<Integer> job = () -> {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException ignored) {
-            }
-            return 100500;
-        };
-
-        ThreadPool<Integer> pool = new ThreadPool<>(1);
-        LightFuture<Integer> task1 = pool.addTask(job);
-        LightFuture<Integer> task2 = pool.addTask(job);
-
-        assertFalse(task1.isReady());
-        assertFalse(task2.isReady());
-        assertEquals(100500, task1.get().intValue());
-        assertTrue(task1.isReady());
-        assertFalse(task2.isReady());
-        assertEquals(100500, task2.get().intValue());
-        assertTrue(task2.isReady());
+        System.out.println("testManyTasksWithManyThreads: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -121,6 +111,9 @@ class ThreadPoolTest {
         assertTrue(task2.isReady());
         assertFalse(task3.isReady());
         assertFalse(task4.isReady());
+
+        System.out.println("testShutdown: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -137,6 +130,8 @@ class ThreadPoolTest {
         for (int i = 0; i < 7; i++) {
             assertEquals(i + 1, tasks[i].get().intValue());
         }
+        System.out.println("testThenApply: Successful");
+        System.out.flush();
     }
 
     @Test
@@ -166,5 +161,8 @@ class ThreadPoolTest {
             threads[i].join();
             assertTrue(correct[i]);
         }
+
+        System.out.println("testMultipleThreads: Successful");
+        System.out.flush();
     }
 }
