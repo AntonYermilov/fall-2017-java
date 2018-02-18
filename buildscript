@@ -5,7 +5,7 @@ for runscript in $(find . -name gradlew); do
     dir=$(dirname $runscript)
     echo 'Building' $dir
     cd $dir
-    ./gradlew build
+    ./gradlew build --stacktrace
     if [ $? -ne 0 ]; then
         exit 1
     fi
