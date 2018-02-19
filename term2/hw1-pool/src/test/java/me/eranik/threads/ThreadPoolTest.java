@@ -7,10 +7,12 @@ import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import static me.eranik.threads.LightFuture.LightExecutionException;
+
 class ThreadPoolTest {
 
     @Test
-    void testTasksWithOneThread() {
+    void testTasksWithOneThread() throws LightFuture.LightExecutionException {
         ThreadPool<String> pool = new ThreadPool<>(1);
         LightFuture<String> task1 = pool.addTask(() -> "Hello world!");
         LightFuture<String> task2 = pool.addTask(() -> "Hello world!".substring(6));
@@ -24,7 +26,7 @@ class ThreadPoolTest {
     }
 
     @Test
-    void testTasksWithTwoThreads() {
+    void testTasksWithTwoThreads() throws LightFuture.LightExecutionException {
         ThreadPool<String> pool = new ThreadPool<>(2);
         LightFuture<String> task1 = pool.addTask(() -> "Hello world!");
         LightFuture<String> task2 = pool.addTask(() -> "Hello world!".substring(6));
@@ -38,7 +40,7 @@ class ThreadPoolTest {
     }
 
     @Test
-    void testTasksWithManyThreads() {
+    void testTasksWithManyThreads() throws LightFuture.LightExecutionException {
         ThreadPool<String> pool = new ThreadPool<>(10);
         LightFuture<String> task1 = pool.addTask(() -> "Hello world!");
         LightFuture<String> task2 = pool.addTask(() -> "Hello world!".substring(6));
@@ -53,7 +55,7 @@ class ThreadPoolTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void testManyTasksWithOneThread() {
+    void testManyTasksWithOneThread() throws LightFuture.LightExecutionException {
         ThreadPool<Integer> pool = new ThreadPool<>(1);
         LightFuture<Integer>[] tasks = new LightFuture[1000];
         for (int i = 0; i < 1000; i++) {
@@ -70,7 +72,7 @@ class ThreadPoolTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void testManyTasksWithManyThreads() {
+    void testManyTasksWithManyThreads() throws LightFuture.LightExecutionException {
         ThreadPool<Integer> pool = new ThreadPool<>(5);
         LightFuture<Integer>[] tasks = new LightFuture[1000];
         for (int i = 0; i < 1000; i++) {
@@ -122,7 +124,7 @@ class ThreadPoolTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void testThenApply() {
+    void testThenApply() throws LightFuture.LightExecutionException {
         ThreadPool<Integer> pool = new ThreadPool<>(4);
 
         LightFuture<Integer>[] tasks = new LightFuture[7];
@@ -152,9 +154,12 @@ class ThreadPoolTest {
                 final int k = random.nextInt();
                 LightFuture<Integer> task1 = pool.addTask(() -> j * j);
                 LightFuture<Integer> task2 = pool.addTask(() -> j * k);
-                assertEquals(j * j, task1.get().intValue());
-                assertEquals(j * k, task2.get().intValue());
-                correct[num] = true;
+                try {
+                    assertEquals(j * j, task1.get().intValue());
+                    assertEquals(j * k, task2.get().intValue());
+                    correct[num] = true;
+                } catch (LightExecutionException ignored) {
+                }
             });
             threads[i].setDaemon(true);
         }
@@ -168,5 +173,14 @@ class ThreadPoolTest {
 
         System.out.println("testMultipleThreads: Successful");
         System.out.flush();
+    }
+
+    @Test
+    void testLightExecutionException() {
+        ThreadPool<Integer> pool = new ThreadPool<>(1);
+        LightFuture<Integer> task = pool.addTask(() -> {
+            throw new RuntimeException("Hello world!");
+        });
+        assertThrows(LightExecutionException.class, task::get);
     }
 }

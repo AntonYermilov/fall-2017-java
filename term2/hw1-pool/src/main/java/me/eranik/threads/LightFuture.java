@@ -32,7 +32,7 @@ public interface LightFuture<T> {
     /**
      * Exception that is thrown if some error occurred when executing task.
      */
-    class LightExecutionException extends RuntimeException {
+    class LightExecutionException extends Exception {
         LightExecutionException(Exception e) {
             super(e);
         }

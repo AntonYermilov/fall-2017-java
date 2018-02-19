@@ -8,7 +8,7 @@ import me.eranik.threads.ThreadPool;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws LightFuture.LightExecutionException {
         ThreadPool<Integer> pool = new ThreadPool<>(5);
         LightFuture<Integer> task = pool.addTask(() -> 2 * 2);
         System.out.println(task.get());

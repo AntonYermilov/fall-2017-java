@@ -20,7 +20,7 @@ public class ThreadPool<T> {
      */
     public ThreadPool(int size) {
         this.size = size;
-        this.threads= new Thread[size];
+        this.threads = new Thread[size];
         this.tasks = new LinkedList<>();
 
         for (int i = 0; i < size; i++) {
@@ -73,7 +73,7 @@ public class ThreadPool<T> {
          */
         @Override
         @SuppressWarnings("unchecked")
-        public T get() {
+        public T get() throws LightExecutionException {
             while (!ready) {
                 Thread.yield();
             }
@@ -88,12 +88,17 @@ public class ThreadPool<T> {
          */
         @Override
         public LightFuture<T> thenApply(Function<T, T> function) {
-            return ThreadPool.this.addTask(() -> function.apply(ThreadPoolTask.this.get()));
+            return ThreadPool.this.addTask(() -> {
+                try {
+                    return function.apply(ThreadPoolTask.this.get());
+                } catch (LightExecutionException e) {
+                    throw new RuntimeException(e.getMessage(), e.getCause());
+                }
+            });
         }
 
         private void run() {
             result = task.get();
-            ready = true;
         }
     }
 
@@ -117,6 +122,7 @@ public class ThreadPool<T> {
                     } catch (Exception e) {
                         task.result = e;
                     }
+                    task.ready = true;
                 }
             }
         }
