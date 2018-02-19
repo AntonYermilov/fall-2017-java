@@ -20,9 +20,6 @@ class ThreadPoolTest {
         assertEquals("Hello world!", task1.get());
         assertEquals("world!", task2.get());
         assertEquals("100500", task3.get());
-
-        System.out.println("testTasksWithOneThread: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -34,9 +31,6 @@ class ThreadPoolTest {
         assertEquals("Hello world!", task1.get());
         assertEquals("world!", task2.get());
         assertEquals("100500", task3.get());
-
-        System.out.println("testTasksWithTwoThreads: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -48,9 +42,6 @@ class ThreadPoolTest {
         assertEquals("Hello world!", task1.get());
         assertEquals("world!", task2.get());
         assertEquals("100500", task3.get());
-
-        System.out.println("testTasksWithManyThreads: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -65,9 +56,6 @@ class ThreadPoolTest {
         for (int i = 0; i < 1000; i++) {
             assertEquals(i * i, tasks[i].get().intValue());
         }
-
-        System.out.println("testManyTasksWithOneThread: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -82,9 +70,6 @@ class ThreadPoolTest {
         for (int i = 0; i < 1000; i++) {
             assertEquals(i * i, tasks[i].get().intValue());
         }
-
-        System.out.println("testManyTasksWithManyThreads: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -117,9 +102,6 @@ class ThreadPoolTest {
         for (Thread thread : (Thread[]) threads.get(pool)) {
             assertTrue(thread.isInterrupted());
         }
-
-        System.out.println("testShutdown: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -136,8 +118,6 @@ class ThreadPoolTest {
         for (int i = 0; i < 7; i++) {
             assertEquals(i + 1, tasks[i].get().intValue());
         }
-        System.out.println("testThenApply: Successful");
-        System.out.flush();
     }
 
     @Test
@@ -170,9 +150,6 @@ class ThreadPoolTest {
             threads[i].join();
             assertTrue(correct[i]);
         }
-
-        System.out.println("testMultipleThreads: Successful");
-        System.out.flush();
     }
 
     @Test

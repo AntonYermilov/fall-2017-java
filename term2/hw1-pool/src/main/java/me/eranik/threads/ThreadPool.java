@@ -50,6 +50,9 @@ public class ThreadPool<T> {
         return wrapper;
     }
 
+    /**
+     * Describes tasks that are processed by thread pool.
+     */
     private class ThreadPoolTask implements LightFuture<T> {
 
         private Supplier<T> task;
@@ -102,6 +105,9 @@ public class ThreadPool<T> {
         }
     }
 
+    /**
+     * Describes job that is used by threads inside thread pool.
+     */
     private class ThreadPoolWorker implements Runnable {
         /**
          * {@inheritDoc}
