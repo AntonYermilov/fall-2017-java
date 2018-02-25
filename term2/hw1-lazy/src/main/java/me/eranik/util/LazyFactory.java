@@ -82,10 +82,15 @@ public class LazyFactory {
          * {@inheritDoc}
          */
         @Override
-        public synchronized T get() {
-            if (supplier != null) {
-                result = supplier.get();
-                supplier = null;
+        public T get() {
+            if (supplier == null) {
+                return result;
+            }
+            synchronized (this) {
+                if (supplier != null) {
+                    result = supplier.get();
+                    supplier = null;
+                }
             }
             return result;
         }
