@@ -7,11 +7,18 @@ import java.util.HashMap;
 
 import static app.options.Constants.*;
 
+/**
+ * Describes logic of tic-tac-toe app.
+ */
 class GameLogic {
 
     private static HashMap<Integer, StateType> gameState;
     private static HashMap<Integer, GameStatus> gameStatus;
 
+
+    /**
+     * For every field state counts whether it is winning or losing and whether it contains winning row.
+     */
     private static void countStates() {
         if (gameState == null) {
             gameState = new HashMap<>();
@@ -63,6 +70,9 @@ class GameLogic {
         }
     }
 
+    /**
+     * Describes field state. State includes current turn and positions of previous turns.
+     */
     static class State {
         private static final int DIRECTIONS = 4;
         private static final int[] dx = new int[]{1, 1, 1, 0};
@@ -78,25 +88,51 @@ class GameLogic {
             this.turn = turn;
         }
 
+        /**
+         * Checks whether specified cell is empty.
+         * @param cellX column
+         * @param cellY row
+         * @return {@code true} if cell is empty; {@code false} otherwise
+         */
         boolean isEmpty(int cellX, int cellY) {
             return getCell(cellX, cellY) == FieldValue.None;
         }
 
+        /**
+         * Makes turn to the specified cell.
+         * @param cellX column
+         * @param cellY row
+         * @return new state that describes field after this move
+         */
         State makeTurn(int cellX, int cellY) {
             int id = cellX * FIELD_ROWS + cellY;
             int newMask = mask | turn.getValue() << (2 * id);
             return new State(newMask, turn.change());
         }
 
+        /**
+         * Returns current turn's role.
+         * @return current turn's role
+         */
         GameTurn getTurn() {
             return turn;
         }
 
+        /**
+         * Returns value that is placed to the specified cell of the field.
+         * @param cellX column
+         * @param cellY row
+         * @return value that is placed to the specified cell of the field
+         */
         FieldValue getCell(int cellX, int cellY) {
             int id = cellX * FIELD_ROWS + cellY;
             return FieldValue.get((mask >> (2 * id)) & 3);
         }
 
+        /**
+         * Returns winner of the current game or {@code None} if game is still in process.
+         * @return winner of the current game or {@code None} if game is still in process
+         */
         GameStatus getWinner() {
             countStates();
             if (!gameStatus.containsKey(mask)) {
@@ -105,11 +141,20 @@ class GameLogic {
             return gameStatus.get(mask);
         }
 
+        /**
+         * Says whether current state is winning, losing or tie.
+         * @return {@code Win} if current state is winning; {@code Lose} if current state is losing;
+         * {@code Tie} otherwise
+         */
         StateType getStateType() {
             countStates();
             return gameState.get(mask);
         }
 
+        /**
+         * Returns extreme points of the winning row.
+         * @return extreme points of the winning row; {@code null} if no winning row exists
+         */
         Pair<Point, Point> getWinningRow() {
             for (int cellX = 0; cellX < FIELD_COLS; cellX++) {
                 for (int cellY = 0; cellY < FIELD_ROWS; cellY++) {

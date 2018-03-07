@@ -12,10 +12,17 @@ public class StatisticsHandler {
 
     @FXML private TableView<Statistics.Record> tableView;
 
+    /**
+     * Loads main menu scene.
+     * @throws IOException if any error occurred
+     */
     @FXML public void loadPreviousScene() throws IOException {
         GUIStructure.getPrimaryStage().setScene(GUIStructure.getMainScene());
     }
 
+    /**
+     * Initializes table to show statistics.
+     */
     @FXML public void initialize() {
         ObservableList<Statistics.Record> data = tableView.getItems();
         data.addAll(Statistics.getRecords());

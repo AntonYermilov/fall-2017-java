@@ -1,5 +1,8 @@
 package app.options;
 
+/**
+ * Describes constants and defines that are used allover the app.
+ */
 public class Constants {
     public static final int WINDOW_WIDTH = 430;
     public static final int WINDOW_HEIGHT = 430;

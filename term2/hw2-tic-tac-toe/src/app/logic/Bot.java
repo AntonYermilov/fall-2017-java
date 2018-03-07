@@ -9,6 +9,9 @@ import java.util.Random;
 import static app.options.Constants.*;
 import static app.logic.GameLogic.State;
 
+/**
+ * Describes possible strategies for singleplayer.
+ */
 public class Bot {
 
     private static Random random = new Random(new Date().getTime());
@@ -23,6 +26,11 @@ public class Bot {
         return null;
     }
 
+    /**
+     * Random bot that makes turn to any free cell.
+     * @param state current game state
+     * @return cell in which bot wants to make a move
+     */
     static Point easyStrategy(State state) {
         ArrayList<Point> emptyCells = new ArrayList<>();
         for (int cellX = 0; cellX < FIELD_COLS; cellX++) {
@@ -35,6 +43,11 @@ public class Bot {
         return emptyCells.get(random.nextInt(emptyCells.size()));
     }
 
+    /**
+     * Bot that analyses current state and chooses optimal turn among all possible ones.
+     * @param state current game state
+     * @return cell in which bot wants to make a move
+     */
     static Point hardStrategy(State state) {
         Point winTurn = null;
         Point tieTurn = null;

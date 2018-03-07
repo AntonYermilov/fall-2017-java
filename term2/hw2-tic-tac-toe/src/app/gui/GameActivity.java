@@ -7,22 +7,33 @@ import javafx.scene.text.Text;
 
 import static app.options.Constants.*;
 
+/**
+ * Describes drawing of game elements.
+ */
 public class GameActivity {
 
     private static Canvas canvas;
     private static Text gameResult;
     private static Text gameProcess;
 
+    /**
+     * Saves scene parameters, such as field and text menus.
+     * @param canvas game field
+     * @param gameResult text menu with results of game
+     * @param gameProcess text menu with game's process
+     */
     public static void initialize(Canvas canvas, Text gameResult, Text gameProcess) {
         GameActivity.canvas = canvas;
         GameActivity.gameResult = gameResult;
         GameActivity.gameProcess = gameProcess;
-
-
     }
 
-    public static void showResult(GameStatus state) {
-        switch (state) {
+    /**
+     * Shows game winner.
+     * @param status game winner
+     */
+    public static void showResult(GameStatus status) {
+        switch (status) {
             case X:
                 gameResult.setText("X wins");
                 break;
@@ -38,8 +49,12 @@ public class GameActivity {
         }
     }
 
-    public static void showProcess(GameStatus state) {
-        switch (state) {
+    /**
+     * Shows current game process and turn.
+     * @param status game process
+     */
+    public static void showProcess(GameStatus status) {
+        switch (status) {
             case X:
                 gameProcess.setText("X turn");
                 break;

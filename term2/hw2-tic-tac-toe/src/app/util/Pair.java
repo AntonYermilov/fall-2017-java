@@ -1,5 +1,10 @@
 package app.util;
 
+/**
+ * Stores pair of elements of the specified types.
+ * @param <T> type of first element
+ * @param <U> type of second element
+ */
 public class Pair<T, U> {
     public T first;
     public U second;

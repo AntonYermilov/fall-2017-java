@@ -1,5 +1,8 @@
 package app.util;
 
+/**
+ * Stores pair of coordinates that describe some point.
+ */
 public class Point {
     public int x;
     public int y;
