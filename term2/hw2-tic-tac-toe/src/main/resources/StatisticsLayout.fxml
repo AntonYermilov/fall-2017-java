@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="me.eranik.app.handler.StatisticsHandler"
+          alignment="CENTER" hgap="1" vgap="3">
+    <padding>
+        <Insets top="35" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <TableView fx:id="tableView" GridPane.rowIndex="0" GridPane.columnIndex="0" minWidth="350">
+        <columns>
+            <TableColumn text="Date" minWidth="100" maxWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="date"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Game Type" minWidth="152" maxWidth="152">
+                <cellValueFactory>
+                    <PropertyValueFactory property="gameType"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Winner" minWidth="80" maxWidth="80">
+                <cellValueFactory>
+                    <PropertyValueFactory property="winner"/>
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+    <HBox alignment="CENTER" GridPane.rowIndex="2" GridPane.columnIndex="0">
+        <Button text="Back" onAction="#loadPreviousScene"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@style.css"/>
+    </stylesheets>
+</GridPane>
