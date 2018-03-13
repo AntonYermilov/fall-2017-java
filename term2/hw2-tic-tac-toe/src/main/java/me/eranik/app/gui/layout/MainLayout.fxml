@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="me.eranik.app.handler.MainHandler"
+          alignment="CENTER" hgap="1" vgap="7">
+
+    <HBox alignment="CENTER" GridPane.rowIndex="2" GridPane.columnIndex="0">
+        <Button text="Multiplayer" onAction="#loadGameScene"/>
+    </HBox>
+
+    <HBox alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Button text="Singleplayer" onAction="#loadSingleplayerModeScene"/>
+    </HBox>
+
+    <HBox alignment="CENTER" GridPane.rowIndex="4" GridPane.columnIndex="0">
+        <Button text="Statistics" onAction="#loadStatistics"/>
+    </HBox>
+
+    <HBox alignment="CENTER" GridPane.rowIndex="6" GridPane.columnIndex="0">
+        <Button text="Exit" onAction="#exit"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@style.css" />
+    </stylesheets>
+
+</GridPane>

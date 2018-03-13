@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/hw2-tic-tac-toe.iml" filepath="$PROJECT_DIR$/hw2-tic-tac-toe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw2-tic-tac-toe_main.iml" filepath="$PROJECT_DIR$/.idea/modules/hw2-tic-tac-toe_main.iml" group="hw2-tic-tac-toe" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hw2-tic-tac-toe_test.iml" filepath="$PROJECT_DIR$/.idea/modules/hw2-tic-tac-toe_test.iml" group="hw2-tic-tac-toe" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/term2-hw2-tic-tac-toe.iml" filepath="$PROJECT_DIR$/.idea/modules/term2-hw2-tic-tac-toe.iml" />
     </modules>
   </component>
 </project>
