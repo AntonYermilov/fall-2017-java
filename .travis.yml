@@ -1,4 +1,6 @@
 language: java
 jdk: oraclejdk8
-script: ./buildscript
+script: 
+  - cd term2
+  - ./buildscript
 os: linux
