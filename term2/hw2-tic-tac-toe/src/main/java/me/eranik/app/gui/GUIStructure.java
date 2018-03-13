@@ -40,7 +40,7 @@ public class GUIStructure {
      * @throws IOException if any error when searching layout occurred
      */
     public static Scene getMainScene() throws IOException {
-        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("layout/MainLayout.fxml"));
+        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("/MainLayout.fxml"));
         Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
         return scene;
     }
@@ -51,7 +51,7 @@ public class GUIStructure {
      * @throws IOException if any error when searching layout occurred
      */
     public static Scene getGameScene() throws IOException {
-        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("layout/GameLayout.fxml"));
+        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("/GameLayout.fxml"));
         Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
         return scene;
     }
@@ -62,7 +62,7 @@ public class GUIStructure {
      * @throws IOException if any error when searching layout occurred
      */
     public static Scene getSingleplayerModeScene() throws IOException {
-        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("layout/SingleplayerModeLayout.fxml"));
+        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("/SingleplayerModeLayout.fxml"));
         Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
         return scene;
     }
@@ -73,7 +73,7 @@ public class GUIStructure {
      * @throws IOException if any error when searching layout occurred
      */
     public static Scene getStatisticsScene() throws IOException {
-        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("layout/StatisticsLayout.fxml"));
+        Parent layout = FXMLLoader.load(GUIStructure.class.getResource("/StatisticsLayout.fxml"));
         Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
         return scene;
     }
