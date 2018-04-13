@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Server {
 
     public static void main(String[] args) {
-        int portNumber = 8888;
+        int portNumber = Integer.parseInt(args[0]);
 
         Thread server = new Thread(() -> runServer(portNumber));
         server.setDaemon(false);
@@ -40,7 +40,7 @@ public class Server {
             output.println("Server " + server.getInetAddress() + " is running on port " + portNumber);
             server.setSoTimeout(20000);
 
-            while (true) {
+            while (!Thread.interrupted()) {
                 try (Socket connection = server.accept()) {
                     output.println(connection.getInetAddress() + " connected");
 
@@ -48,9 +48,6 @@ public class Server {
 
                     output.println(connection.getInetAddress() + " disconnected");
                 } catch (SocketTimeoutException skip) {
-                    if (Thread.interrupted()) {
-                        break;
-                    }
                 } catch (IOException e) {
                     System.err.println("Error occurred when listening for a connection");
                     System.err.println(e.getMessage());
