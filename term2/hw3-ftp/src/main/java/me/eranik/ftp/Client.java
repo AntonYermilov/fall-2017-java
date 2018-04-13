@@ -18,7 +18,7 @@ public class Client {
 
     /**
      * Runs client. Queries are sent to the server with the specified port and hostname.
-     * @param args List of arguments. First argument contains hostname, second argument contains port number.
+     * @param args list of arguments: first argument contains hostname, second argument contains port number
      */
     public static void main(String[] args) {
         hostName = args[0];

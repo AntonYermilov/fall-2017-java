@@ -6,8 +6,17 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
+/**
+ * Server implementation. Provides possibility to listen connections from outside
+ * and process queries from clients.
+ */
 public class Server {
 
+    /**
+     * Runs server on the specified port. Listens to clients and processes queries from them.
+     * Also allows you to kill server by writing a special command.
+     * @param args list of arguments: first argument contains port number
+     */
     public static void main(String[] args) {
         int portNumber = Integer.parseInt(args[0]);
 
@@ -33,6 +42,10 @@ public class Server {
         server.interrupt();
     }
 
+    /**
+     * Runs server on the specified port and listens for connections.
+     * @param portNumber number of port to start server on
+     */
     public static void runServer(int portNumber) {
         try (ServerSocket server = new ServerSocket(portNumber);
              PrintWriter output = new PrintWriter(System.out, true)
@@ -61,10 +74,19 @@ public class Server {
         }
     }
 
+    /**
+     * Provides file transfer protocol implementation for processing queries and forming responses to them.
+     */
     private static class FileTransferProtocol {
 
         private static final int BUFFER_SIZE = 4096;
 
+        /**
+         * Reads path from the connection's query.
+         * @param input stream that allows to read client's query
+         * @return path to the file or directory from the client's query
+         * @throws IOException if any other error occurred while listening for connection
+         */
         private static String readPath(DataInputStream input) throws IOException {
             StringBuilder path = new StringBuilder();
             byte[] buffer = new byte[BUFFER_SIZE];
@@ -74,6 +96,12 @@ public class Server {
             return path.toString();
         }
 
+        /**
+         * Prints tree of parent's directory to the string.
+         * @param parent specified parent's directory
+         * @param list list to store files and directories from the directory tree of specified directory
+         * @return number of files and directories in he directory tree of specified directory
+         */
         private static int getDirectoryTree(File parent, StringBuilder list) {
             int size = 0;
                 if (parent.isDirectory()) {
@@ -88,6 +116,12 @@ public class Server {
             return size;
         }
 
+        /**
+         * Sends list of files and directories from the directory tree of specified directory to the client.
+         * @param output stream that allows to write response to client
+         * @param path path to the specified directory
+         * @throws IOException if any other error occurred while listening for connection
+         */
         private static void processListQuery(DataOutputStream output, String path) throws IOException {
             File file = new File(path);
             StringBuilder list = new StringBuilder();
@@ -96,6 +130,12 @@ public class Server {
             output.write(list.toString().getBytes());
         }
 
+        /**
+         * Sends specified file to the client.
+         * @param output stream that allows to write response to client
+         * @param path path to the specified directory
+         * @throws IOException if any other error occurred while listening for connection
+         */
         private static void processGetQuery(DataOutputStream output, String path) throws IOException {
             File file = new File(path);
             if (!file.isFile()) {
@@ -111,6 +151,12 @@ public class Server {
             }
         }
 
+        /**
+         * Processes query from the specified connection and sends response to it.
+         * @param connection specified connection to process query from
+         * @throws FileTransferProtocolException if query does not satisfy file transfer protocol
+         * @throws IOException if any other error occurred while listening for connection
+         */
         static void processConnection(Socket connection) throws IOException {
             try (DataInputStream input = new DataInputStream(connection.getInputStream());
                  DataOutputStream output = new DataOutputStream(connection.getOutputStream())
@@ -133,9 +179,12 @@ public class Server {
             }
         }
 
+        /**
+         * Is thrown when client's query does not satisfy the file transfer protocol.
+         */
         static class FileTransferProtocolException extends IOException {
             FileTransferProtocolException() {
-                super("The request does not match the protocol");
+                super("The query does not match the protocol");
             }
         }
 
