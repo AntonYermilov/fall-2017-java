@@ -1,5 +1,7 @@
 package me.eranik.ftp;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -10,20 +12,39 @@ import java.util.Scanner;
  */
 public class Client {
 
-    private static final int BUFFER_SIZE = 4096;
-    private static final byte[] buffer = new byte[BUFFER_SIZE];
+    private final int BUFFER_SIZE = 4096;
+    private final byte[] buffer = new byte[BUFFER_SIZE];
 
-    private static String hostName;
-    private static int portNumber;
+    private String hostName;
+    private int portNumber;
+
+    private Scanner reader;
+    private PrintWriter writer;
 
     /**
      * Runs client. Queries are sent to the server with the specified port and hostname.
      * @param args list of arguments: first argument contains hostname, second argument contains port number
      */
     public static void main(String[] args) {
-        hostName = args[0];
-        portNumber = Integer.parseInt(args[1]);
-        runClient();
+        String hostName = args[0];
+        int portNumber = Integer.parseInt(args[1]);
+        new Client(hostName, portNumber, System.in, System.out).runClient();
+    }
+
+    /**
+     * Creates clients that connects to the specified host on the specified port.
+     * Uses inputStream and outputStream to read queries and write responses.
+     * @param hostName address of host to connect
+     * @param portNumber number of port to connect
+     * @param inputStream stream from which we can read queries
+     * @param outputStream stream to which we would write responses
+     */
+    public Client(@NotNull String hostName, int portNumber, @NotNull InputStream inputStream,
+                  @NotNull OutputStream outputStream) {
+        this.hostName = hostName;
+        this.portNumber = portNumber;
+        this.reader = new Scanner(inputStream);
+        this.writer = new PrintWriter(outputStream, true);
     }
 
     /**
@@ -31,25 +52,23 @@ public class Client {
      * <1: Int> <path: String>       List of all files in the specified directory.
      * <2: Int> <path: String>       Download file from server.
      */
-    public static void runClient() {
-        try (Scanner input = new Scanner(new InputStreamReader(System.in))) {
-            while (input.hasNext()) {
-                String type = input.next();
-                if (type.equals("exit")) {
-                    System.exit(0);
-                }
-
-                if (!type.equals("1") && !type.equals("2") || !input.hasNext()) {
-                    System.out.println("Incorrect query format.");
-                    System.out.println("<1: Int> <path: String>       List of all files in the specified directory.");
-                    System.out.println("<2: Int> <path: String>       Download file from server.");
-                    System.out.println("exit                          Exit program.");
-                    continue;
-                }
-
-                String path = input.nextLine().trim();
-                processQuery(Integer.parseInt(type), path);
+    public void runClient() {
+        while (reader.hasNext()) {
+            String type = reader.next();
+            if (type.equals("exit")) {
+                System.exit(0);
             }
+
+            if (!type.equals("1") && !type.equals("2") || !reader.hasNext()) {
+                writer.println("Incorrect query format.");
+                writer.println("<1: Int> <path: String>       List of all files in the specified directory.");
+                writer.println("<2: Int> <path: String>       Download file from server.");
+                writer.println("exit                          Exit program.");
+                continue;
+            }
+
+            String path = reader.nextLine().trim();
+            processQuery(Integer.parseInt(type), path);
         }
     }
 
@@ -58,22 +77,22 @@ public class Client {
      * @param type type of query
      * @param path path to the file or directory
      */
-    private static void processQuery(int type, String path) {
+    private void processQuery(int type, @NotNull String path) {
         try (Socket socket = new Socket(hostName, portNumber);
-             DataInputStream input = new DataInputStream(socket.getInputStream());
-             DataOutputStream output = new DataOutputStream(socket.getOutputStream())
+             DataInputStream dataInput = new DataInputStream(socket.getInputStream());
+             DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream())
         ) {
-            output.writeInt(type);
-            output.write(path.getBytes());
-            output.flush();
+            dataOutput.writeInt(type);
+            dataOutput.write(path.getBytes());
+            dataOutput.flush();
 
             socket.shutdownOutput();
 
             try {
                 if (type == 1) {
-                    listFiles(input);
+                    listFiles(dataInput);
                 } else {
-                    saveFile(input, new File(path).getName());
+                    saveFile(dataInput, new File(path).getName());
                 }
             } catch (IOException e) {
                 System.err.println("Error occurred while getting server's response");
@@ -87,34 +106,37 @@ public class Client {
 
     /**
      * Processes response to the first type of query. Prints list of files in the directory from query.
-     * @param input stream that allows to read server's response
+     * @param dataInput stream that allows to read server's response
      * @throws IOException if any error occurred while getting response from server
      */
-    private static void listFiles(DataInputStream input) throws IOException {
-        int size = input.readInt();
+    private void listFiles(@NotNull DataInputStream dataInput) throws IOException {
+        int size = dataInput.readInt();
         StringBuilder result = new StringBuilder();
-        for (int read = input.read(buffer); read != -1; read = input.read(buffer)) {
+        for (int read = dataInput.read(buffer); read != -1; read = dataInput.read(buffer)) {
             result.append(new String(buffer, 0, read));
         }
 
-        System.out.println(size);
-        System.out.println(result.toString());
-        System.out.flush();
+        writer.println(size);
+        writer.println(result.toString());
     }
 
     /**
      * Processes response to the second type of query. Downloads file from server and saves it locally to
      * the file with the same name.
-     * @param input stream that allows to read server's response
+     * @param dataInput stream that allows to read server's response
      * @param filename name of file to be saved locally
      * @throws IOException if any error occurred while getting response from server
      */
-    private static void saveFile(DataInputStream input, String filename) throws IOException {
-        long size = input.readLong();
-        try (DataOutputStream output = new DataOutputStream(new FileOutputStream(new File(filename)))) {
-            for (int read = input.read(buffer); read != -1; read = input.read(buffer)) {
+    private void saveFile(@NotNull DataInputStream dataInput, @NotNull String filename) throws IOException {
+        long size = dataInput.readLong();
+        if (size == 0) {
+            return;
+        }
+
+        try (DataOutputStream dataOutput = new DataOutputStream(new FileOutputStream(new File(filename)))) {
+            for (int read = dataInput.read(buffer); read != -1; read = dataInput.read(buffer)) {
                 size -= read;
-                output.write(buffer, 0, read);
+                dataOutput.write(buffer, 0, read);
             }
             if (size != 0) {
                 throw new FileTransferProtocolException();
@@ -128,7 +150,7 @@ public class Client {
     /**
      * Is thrown when server's response does not satisfy the file transfer protocol.
      */
-    private static class FileTransferProtocolException extends IOException {
+    private class FileTransferProtocolException extends IOException {
         private FileTransferProtocolException() {
             super("Some data lost or you received some extra data while getting file from server");
         }
