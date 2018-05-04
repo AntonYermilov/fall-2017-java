@@ -1,0 +1,50 @@
+.root {
+    -fx-background-image: url("static/background.jpg");
+    -fx-background-size: cover;
+}
+
+#gameResult {
+    -fx-font-family: Palatino;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-fill: rgb(145, 100, 30);
+    -fx-stroke: black;
+}
+
+#gameProcess {
+    -fx-font-family: Palatino;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: rgb(145, 100, 30);
+    -fx-stroke: black;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}
+
+.table-cell {
+    -fx-alignment: CENTER;
+}
+
+.button {
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+    -fx-font-family: Palatino;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+    -fx-text-fill: rgb(110, 80, 30);
+    -fx-background-color: rgba(230, 160, 60, 0.3);
+    -fx-border-color: black;
+    -fx-min-width: 80;
+    -fx-min-height: 40;
+}
+
+.button:hover{
+    -fx-background-color: linear-gradient(rgb(240, 190, 50), rgb(220, 160, 100));
+}
+
+.button:pressed{
+    -fx-background-color: linear-gradient(rgb(220, 160, 100), rgb(240, 190, 50));
+}
