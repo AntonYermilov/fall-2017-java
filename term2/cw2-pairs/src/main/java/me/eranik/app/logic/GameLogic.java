@@ -11,7 +11,6 @@ public class GameLogic {
 
     private static Random random = new Random(13);
 
-    private static int fieldSize;
     private static int[][] field;
     private static boolean[][] opened;
 
@@ -23,7 +22,6 @@ public class GameLogic {
      * @param fieldSize
      */
     public static void initialize(int fieldSize) {
-        GameLogic.fieldSize = fieldSize;
         GameLogic.field = new int[fieldSize][fieldSize];
         GameLogic.opened = new boolean[fieldSize][fieldSize];
 
@@ -50,9 +48,9 @@ public class GameLogic {
     }
 
     private static void swap(int[] array, int i, int j) {
-        array[i] ^= array[j];
-        array[j] ^= array[i];
-        array[i] ^= array[j];
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
     }
 
     /**
@@ -146,5 +144,20 @@ public class GameLogic {
      */
     public static Pair<Integer, Integer> getPositionSecond() {
         return positionSecond;
+    }
+
+    /**
+     * Checks if game is finished.
+     * @return {@code true} if game is finished; {@code false} otherwise
+     */
+    public static boolean isFinished() {
+        for (boolean[] row : opened) {
+            for (boolean value : row) {
+                if (!value) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

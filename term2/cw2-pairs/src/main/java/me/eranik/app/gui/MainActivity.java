@@ -22,8 +22,6 @@ import static me.eranik.app.options.Constants.WINDOW_WIDTH;
  */
 public class MainActivity extends Application {
 
-    private static Stage primaryStage;
-
     private static int fieldSize;
     private static int cellWidth;
     private static int cellHeight;
@@ -81,6 +79,16 @@ public class MainActivity extends Application {
         primaryStage.show();
     }
 
+    public void startGame() {
+        GameLogic.initialize(fieldSize);
+        for (int row = 0; row < fieldSize; row++) {
+            for (int column = 0; column < fieldSize; column++) {
+                buttons[row][column].setText("");
+                buttons[row][column].setDisable(false);
+            }
+        }
+    }
+
     /**
      * Handles mouse click on button and shows it's text.
      * @param event mouse click event
@@ -115,6 +123,10 @@ public class MainActivity extends Application {
                 })).play();
             }
             GameLogic.close();
+        }
+
+        if (GameLogic.isFinished()) {
+            new Timeline(new KeyFrame(Duration.millis(1500), task -> startGame())).play();
         }
     }
 
