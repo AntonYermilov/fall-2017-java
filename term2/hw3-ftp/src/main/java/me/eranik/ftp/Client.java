@@ -21,11 +21,21 @@ public class Client {
     private Scanner reader;
     private PrintWriter writer;
 
+    private enum QueryStatus {
+        SUCCESS, CONNECTION_ERROR, RESPONSE_ERROR
+    }
+
+
     /**
      * Runs client. Queries are sent to the server with the specified port and hostname.
      * @param args list of arguments: first argument contains hostname, second argument contains port number
      */
     public static void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println("Expected two arguments: <host name> <port number>");
+            System.exit(1);
+        }
+
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
         new Client(hostName, portNumber, System.in, System.out).runClient();
@@ -54,21 +64,39 @@ public class Client {
      */
     public void runClient() {
         while (reader.hasNext()) {
-            String type = reader.next();
-            if (type.equals("exit")) {
+            String query = reader.nextLine();
+            String[] args = query.split(" ");
+
+            if (args.length == 1 && args[0].equals("exit")) {
                 System.exit(0);
             }
 
-            if (!type.equals("1") && !type.equals("2") || !reader.hasNext()) {
+            if (args.length != 2 || !args[0].equals("list") && !args[0].equals("get")) {
                 writer.println("Incorrect query format.");
-                writer.println("<1: Int> <path: String>       List of all files in the specified directory.");
-                writer.println("<2: Int> <path: String>       Download file from server.");
-                writer.println("exit                          Exit program.");
+                writer.println("list <path: String>       List of all files in the specified directory.");
+                writer.println("get  <path: String>       Download file from server.");
+                writer.println("exit                      Exit program.");
                 continue;
             }
 
-            String path = reader.nextLine().trim();
-            processQuery(Integer.parseInt(type), path);
+            String type = args[0];
+            String path = args[1].trim();
+
+            QueryStatus status = processQuery(type.equals("list") ? 1 : 2, path);
+            switch (status) {
+                case RESPONSE_ERROR:
+                    writer.println("Error occurred while getting response from server.");
+                    writer.println("Check whether your query is correct or try again later.");
+                    break;
+                case CONNECTION_ERROR:
+                    writer.println("Can't connect to server. Try again later.");
+                    break;
+                case SUCCESS:
+                    if (type.equals("get")) {
+                        writer.println("File was successfully downloaded to the current directory.");
+                    }
+                    break;
+            }
         }
     }
 
@@ -77,7 +105,7 @@ public class Client {
      * @param type type of query
      * @param path path to the file or directory
      */
-    private void processQuery(int type, @NotNull String path) {
+    private QueryStatus processQuery(int type, @NotNull String path) {
         try (Socket socket = new Socket(hostName, portNumber);
              DataInputStream dataInput = new DataInputStream(socket.getInputStream());
              DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream())
@@ -95,13 +123,12 @@ public class Client {
                     saveFile(dataInput, new File(path).getName());
                 }
             } catch (IOException e) {
-                System.err.println("Error occurred while getting server's response");
-                System.err.println(e.getMessage());
+                return QueryStatus.RESPONSE_ERROR;
             }
         } catch (IOException e) {
-            System.err.println("Error occurred while connecting to server");
-            System.err.println(e.getMessage());
+            return QueryStatus.CONNECTION_ERROR;
         }
+        return QueryStatus.SUCCESS;
     }
 
     /**

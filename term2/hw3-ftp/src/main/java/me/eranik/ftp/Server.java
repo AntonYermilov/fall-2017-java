@@ -27,6 +27,11 @@ public class Server {
      * @param args list of arguments: first argument contains port number
      */
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Expected one argument: <port number>");
+            System.exit(1);
+        }
+
         int portNumber = Integer.parseInt(args[0]);
 
         Thread server = new Thread(() -> new Server(portNumber).runServer());
