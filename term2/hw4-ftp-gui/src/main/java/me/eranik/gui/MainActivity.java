@@ -17,8 +17,8 @@ public class MainActivity extends Application {
     public static final int WINDOW_WIDTH = 500;
     public static final int WINDOW_HEIGHT = 500;
 
-    public static String hostName;
-    public static int portNumber;
+    private static String hostName;
+    private static int portNumber;
 
     /**
      * Receives two arguments: host name and port number. After that starts the app.
@@ -38,7 +38,7 @@ public class MainActivity extends Application {
     /**
      * Starts app. Connects to server and lists files in the root directory.
      * @param primaryStage specified primary stage.
-     * @throws Exception if any error occurred
+     * @throws IOException if any error occurred
      */
     @Override
     public void start(Stage primaryStage) throws IOException {

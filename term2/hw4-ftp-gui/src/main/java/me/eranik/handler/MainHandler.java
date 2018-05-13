@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import me.eranik.ftp.Client;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class MainHandler {
@@ -50,20 +51,21 @@ public class MainHandler {
             }
         });
 
-        if (mouseEvent.getClickCount() != 2) {
-            return;
-        }
         if (selectedRow.getType().equals("File")) {
+            String currentDirectory = Paths.get(".").toAbsolutePath().getParent().toString();
+            textField.setText(Paths.get(currentDirectory, selectedRow.getName()).toString());
             return;
         }
 
-        if (selectedRow.getName().equals("..")) {
-            currentPath = new File(currentPath).getParent();
-        } else {
-            currentPath = currentPath + "/" + selectedRow.getName();
+        textField.setText("");
+        if (mouseEvent.getClickCount() == 2) {
+            if (selectedRow.getName().equals("..")) {
+                currentPath = Paths.get(currentPath).getParent().toString();
+            } else {
+                currentPath = Paths.get(currentPath, selectedRow.getName()).toString();
+            }
+            formRowsList();
         }
-
-        formRowsList();
     }
 
     /**
@@ -117,13 +119,15 @@ public class MainHandler {
         }
 
         String name =  tableView.getSelectionModel().getSelectedItem().getName();
-        if (Client.processGetQuery(currentPath + "/" + name, localPath)) {
+        if (Client.processGetQuery(Paths.get(currentPath, name).toString(), localPath)) {
             text.setFill(Color.BLUE);
             text.setText("Success!");
         } else {
             text.setFill(Color.RED);
             text.setText("Error occurred");
         }
+
+        tableView.getSelectionModel().clearSelection();
         textField.clear();
     }
 
