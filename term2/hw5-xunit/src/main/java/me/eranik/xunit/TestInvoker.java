@@ -2,10 +2,12 @@ package me.eranik.xunit;
 
 import me.eranik.xunit.annotations.*;
 import me.eranik.xunit.exceptions.ExpectedExceptionNotThrown;
+import me.eranik.xunit.exceptions.IncompatibleAnnotationsException;
 import me.eranik.xunit.exceptions.TooManyAnnotationsException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,37 +54,42 @@ public class TestInvoker {
             System.out.println("Class " + name + " was not found.");
             System.out.println("Check provided arguments and try once more.");
             System.exit(3);
-        } catch (TooManyAnnotationsException e) {
+        } catch (TooManyAnnotationsException | IncompatibleAnnotationsException e) {
             System.out.println(e.getMessage());
             System.exit(4);
         }
     }
 
     /**
-     * Gets methods annotated with {@code me.eranik.xunit.annotations} and invokes them.
+     * Gets methods annotated with XUnit annotations and invokes them.
      * @param testClass class with test methods
      * @throws TooManyAnnotationsException if class contains two or more methods annotated with
      *                                     Before, BeforeClass, After or AfterClass annotations
      */
-    private static void processClass(@NotNull Class testClass) throws TooManyAnnotationsException {
+    private static void processClass(@NotNull Class testClass)
+            throws TooManyAnnotationsException, IncompatibleAnnotationsException {
         ClassMethods classMethods = getTestMethods(testClass);
         invoke(classMethods);
     }
 
     /**
-     * Returns methods annotated with {@code me.eranik.xunit.annotations}.
+     * Returns methods annotated with XUnit annotations.
      * @param testClass class with test methods
      * @return annotated methods to invoke
      * @throws TooManyAnnotationsException if class contains two or more methods annotated with
      *                                     Before, BeforeClass, After or AfterClass annotations
      */
-    private static ClassMethods getTestMethods(@NotNull Class testClass) throws TooManyAnnotationsException {
+    private static ClassMethods getTestMethods(@NotNull Class testClass)
+            throws TooManyAnnotationsException, IncompatibleAnnotationsException {
         ClassMethods classMethods = new ClassMethods();
 
         for (Method method : testClass.getMethods()) {
+            int countAnnotations = 0;
+
             if (method.getAnnotation(Test.class) != null) {
                 Test test = method.getAnnotation(Test.class);
                 classMethods.tests.add(new TestMethod(method, test.expected(), test.ignore()));
+                countAnnotations++;
             }
             if (method.getAnnotation(Before.class) != null) {
                 if (classMethods.beforeMethod == null) {
@@ -90,6 +97,7 @@ public class TestInvoker {
                 } else {
                     throw new TooManyAnnotationsException("Before");
                 }
+                countAnnotations++;
             }
             if (method.getAnnotation(After.class) != null) {
                 if (classMethods.afterMethod == null) {
@@ -97,6 +105,7 @@ public class TestInvoker {
                 } else {
                     throw new TooManyAnnotationsException("After");
                 }
+                countAnnotations++;
             }
             if (method.getAnnotation(BeforeClass.class) != null) {
                 if (classMethods.beforeClassMethod == null) {
@@ -104,6 +113,7 @@ public class TestInvoker {
                 } else {
                     throw new TooManyAnnotationsException("BeforeClass");
                 }
+                countAnnotations++;
             }
             if (method.getAnnotation(AfterClass.class) != null) {
                 if (classMethods.afterClassMethod == null) {
@@ -111,6 +121,10 @@ public class TestInvoker {
                 } else {
                     throw new TooManyAnnotationsException("AfterClass");
                 }
+                countAnnotations++;
+            }
+            if (countAnnotations > 1) {
+                throw new IncompatibleAnnotationsException();
             }
         }
 
@@ -118,7 +132,7 @@ public class TestInvoker {
     }
 
     /**
-     * Invokes methods annotated with {@code me.eranik.xunit.annotations} in the following order:
+     * Invokes methods annotated with XUnit annotations in the following order:
      * 1. Invokes method annotated with {@code BeforeClass} if present
      * 2. For each method annotated with {@code Test}:
      *    2.1. Invokes method annotated with {@code Before} if present
@@ -222,7 +236,7 @@ public class TestInvoker {
     }
 
     /**
-     * Class that contains methods annotated with {@code me.eranik.xunit.annotations}.
+     * Class that contains methods annotated with XUnit annotations.
      */
     private static class ClassMethods {
         List<TestMethod> tests = new ArrayList<>();
