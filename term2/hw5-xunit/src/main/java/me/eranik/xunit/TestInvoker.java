@@ -7,12 +7,10 @@ import me.eranik.xunit.exceptions.TooManyAnnotationsException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +26,17 @@ public class TestInvoker {
      * Test is the method annotated with {@code Test} annotation from {@code me.eranik.xunit.annotations}.
      * Also it provides possibility to run some methods either before/after each method or before/after
      * invoking all test methods in class. Such methods should be annotated with corresponding annotations.
-     * @param args list of argument which should contain only path to .class file
+     * @param args list of argument which should contain two arguments: path to project root and name of
+     *             class which contains tests
      */
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.err.println("Expected one argument: <path to .class file with tests>");
+        if (args.length != 2) {
+            System.err.println("Expected two arguments: <path to project root> <class name>");
             System.exit(1);
         }
 
-        String dir = Paths.get(args[0]).getParent().toString();
-        String name = Paths.get(args[0]).getFileName().toString();
+        String dir = args[0];
+        String name = args[1];
 
         ClassLoader loader = null;
         try {
@@ -57,17 +56,24 @@ public class TestInvoker {
         } catch (TooManyAnnotationsException | IncompatibleAnnotationsException e) {
             System.out.println(e.getMessage());
             System.exit(4);
+        } catch (IllegalAccessException | InstantiationException e) {
+            System.out.println("Class " + name + " should contain public default constructor");
+            System.exit(5);
         }
     }
 
     /**
      * Gets methods annotated with XUnit annotations and invokes them.
      * @param testClass class with test methods
-     * @throws TooManyAnnotationsException if class contains two or more methods annotated with
-     *                                     Before, BeforeClass, After or AfterClass annotations
+     *
+     * @throws TooManyAnnotationsException      if class contains two or more methods annotated with Before,
+     *                                          BeforeClass, After or AfterClass annotations
+     * @throws IncompatibleAnnotationsException if any method is annotated with different XUnit annotations
+     * @throws InstantiationException           if class has no default constructor
+     * @throws IllegalAccessException           if class has default constructor, but it is not public
      */
-    private static void processClass(@NotNull Class testClass)
-            throws TooManyAnnotationsException, IncompatibleAnnotationsException {
+    private static void processClass(@NotNull Class testClass) throws TooManyAnnotationsException,
+            IncompatibleAnnotationsException, InstantiationException, IllegalAccessException {
         ClassMethods classMethods = getTestMethods(testClass);
         invoke(classMethods);
     }
@@ -76,15 +82,22 @@ public class TestInvoker {
      * Returns methods annotated with XUnit annotations.
      * @param testClass class with test methods
      * @return annotated methods to invoke
-     * @throws TooManyAnnotationsException if class contains two or more methods annotated with
-     *                                     Before, BeforeClass, After or AfterClass annotations
+     * @throws TooManyAnnotationsException      if class contains two or more methods annotated with Before,
+     *                                          BeforeClass, After or AfterClass annotations
+     * @throws IncompatibleAnnotationsException if any method is annotated with different XUnit annotations
+     * @throws InstantiationException           if class has no default constructor
+     * @throws IllegalAccessException           if class has default constructor, but it is not public
      */
-    private static ClassMethods getTestMethods(@NotNull Class testClass)
-            throws TooManyAnnotationsException, IncompatibleAnnotationsException {
+    private static ClassMethods getTestMethods(@NotNull Class testClass) throws TooManyAnnotationsException,
+            IncompatibleAnnotationsException, IllegalAccessException, InstantiationException {
         ClassMethods classMethods = new ClassMethods();
 
-        for (Method method : testClass.getMethods()) {
+        classMethods.instance = testClass.newInstance();
+
+        for (Method method : testClass.getDeclaredMethods()) {
             int countAnnotations = 0;
+
+            method.setAccessible(true);
 
             if (method.getAnnotation(Test.class) != null) {
                 Test test = method.getAnnotation(Test.class);
@@ -143,13 +156,15 @@ public class TestInvoker {
      * @param classMethods annotated methods to invoke
      */
     private static void invoke(@NotNull ClassMethods classMethods) {
+        System.out.println("===");
+
         int passedTests = 0;
         int allTests = classMethods.tests.size();
         double totalTime = 0;
 
         try {
             if (classMethods.beforeClassMethod != null) {
-                classMethods.beforeClassMethod.invoke(null);
+                classMethods.beforeClassMethod.invoke(classMethods.instance);
             }
 
             for (TestMethod test : classMethods.tests) {
@@ -165,25 +180,31 @@ public class TestInvoker {
                 String reason = null;
 
                 try {
+                    Throwable exception = null;
+
                     if (classMethods.beforeMethod != null) {
-                        classMethods.beforeMethod.invoke(null);
+                        classMethods.beforeMethod.invoke(classMethods.instance);
                     }
 
                     try {
-                        test.test.invoke(null);
+                        test.test.invoke(classMethods.instance);
                         if (!test.expected.equals(Test.NONE.class)) {
-                            throw new ExpectedExceptionNotThrown(test.expected);
+                            exception = new ExpectedExceptionNotThrown(test.expected);
                         }
                     } catch (Exception e) {
-                        if (!test.expected.equals(e.getClass())) {
-                            throw e;
+                        if (!test.expected.equals(e.getCause().getClass())) {
+                            exception = e.getCause();
                         }
                     }
 
                     if (classMethods.afterMethod != null) {
-                        classMethods.afterMethod.invoke(null);
+                        classMethods.afterMethod.invoke(classMethods.instance);
                     }
-                } catch (Exception e) {
+
+                    if (exception != null) {
+                        throw exception;
+                    }
+                } catch (Throwable e) {
                     success = false;
                     reason = e.getMessage();
 
@@ -195,26 +216,28 @@ public class TestInvoker {
                 if (success) {
                     System.out.printf("Test %s passed\nTime: %f sec.\n\n",
                             test.test.getName(), time);
+                    passedTests++;
                 } else {
                     System.out.printf("Test %s failed\nReason: %s\nTime: %f sec.\n\n",
                             test.test.getName(), reason, time);
                 }
 
-                passedTests++;
                 totalTime += time;
             }
 
             if (classMethods.afterClassMethod != null) {
-                classMethods.afterClassMethod.invoke(null);
+                classMethods.afterClassMethod.invoke(classMethods.instance);
             }
         } catch (Exception e) {
             System.out.println("Unexpected exception occurred:");
             System.out.println(e.getMessage());
+            System.out.println();
         }
 
         System.out.println("Test invocation finished");
         System.out.printf("Tests passed: %d/%d\n", passedTests, allTests);
         System.out.printf("Total time: %f\n", totalTime);
+        System.out.println("===\n");
     }
 
     /**
@@ -239,6 +262,7 @@ public class TestInvoker {
      * Class that contains methods annotated with XUnit annotations.
      */
     private static class ClassMethods {
+        Object instance = null;
         List<TestMethod> tests = new ArrayList<>();
         Method beforeMethod = null;
         Method afterMethod = null;
