@@ -22,18 +22,24 @@ public class CorrectTests {
     @Test
     void test1() {
         beforeValue += 5;
-        assert beforeValue == 15;
+        if (beforeValue != 15) {
+            throw new AssertionError();
+        }
     }
 
     @Test(expected = AssertionError.class)
     void test2() {
         beforeValue += 10;
-        assert beforeValue == 15;
+        if (beforeValue != 15) {
+            throw new AssertionError();
+        }
     }
 
     @Test(ignore = "Invalid test")
     void test3() {
         beforeValue += 15;
-        assert beforeValue == 15;
+        if (beforeValue != 15) {
+            throw new AssertionError();
+        }
     }
 }

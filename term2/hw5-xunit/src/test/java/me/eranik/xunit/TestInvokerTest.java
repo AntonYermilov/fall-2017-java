@@ -125,6 +125,7 @@ class TestInvokerTest {
         Class test = ClassLoader.getSystemClassLoader().loadClass("examples.IncorrectTests1");
         assertEquals(null, method.invoke(null, test));
 
+        System.err.println(output.toString());
         assertTrue(output.toString().contains("Tests passed: 2/3"));
         assertTrue(output.toString().contains("Test test1 passed"));
         assertTrue(output.toString().contains("Test test2 passed"));
