@@ -31,7 +31,14 @@ public class MainActivity extends Application {
         }
 
         hostName = args[0];
-        portNumber = Integer.parseInt(args[1]);
+
+        try {
+            portNumber = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.err.println("Port number should be an integer.");
+            System.exit(2);
+        }
+
         launch(args);
     }
 

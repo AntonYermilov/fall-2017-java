@@ -42,7 +42,7 @@ public class Client {
              DataInputStream dataInput = new DataInputStream(socket.getInputStream());
              DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream())
         ) {
-            dataOutput.writeInt(1);
+            dataOutput.writeInt(QueryType.listQuery.getValue());
             dataOutput.write(serverPath.getBytes());
             dataOutput.flush();
 
@@ -71,7 +71,7 @@ public class Client {
              DataInputStream dataInput = new DataInputStream(socket.getInputStream());
              DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream())
         ) {
-            dataOutput.writeInt(2);
+            dataOutput.writeInt(QueryType.getQuery.getValue());
             dataOutput.write(serverPath.getBytes());
             dataOutput.flush();
 

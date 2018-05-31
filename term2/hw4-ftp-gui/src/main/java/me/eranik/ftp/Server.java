@@ -32,9 +32,17 @@ public class Server {
             System.exit(1);
         }
 
-        int portNumber = Integer.parseInt(args[0]);
+        int portNumber = -1;
+        try {
+            portNumber = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.err.println("Port number should be an integer.");
+            System.exit(2);
+        }
 
-        Thread server = new Thread(() -> new Server(portNumber).runServer());
+        final int finalPortNumber = portNumber;
+
+        Thread server = new Thread(() -> new Server(finalPortNumber).runServer());
         server.setDaemon(false);
         server.start();
 
