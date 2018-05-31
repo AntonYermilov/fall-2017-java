@@ -208,12 +208,12 @@ public class Server {
                 int type = input.readInt();
                 String path = readPath(input);
 
-                if (type == 1) {
+                if (type == QueryType.listQuery.getValue()) {
                     processListQuery(output, path);
                     output.flush();
                     return;
                 }
-                if (type == 2) {
+                if (type == QueryType.getQuery.getValue()) {
                     processGetQuery(output, path);
                     output.flush();
                     return;
