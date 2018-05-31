@@ -22,7 +22,7 @@ public class Client {
     private PrintWriter writer;
 
     private enum QueryStatus {
-        SUCCESS, CONNECTION_ERROR, RESPONSE_ERROR
+        SUCCESS, CONNECTION_ERROR, RESPONSE_ERROR, FILE_NOT_EXISTS_ERROR
     }
 
 
@@ -37,7 +37,15 @@ public class Client {
         }
 
         String hostName = args[0];
-        int portNumber = Integer.parseInt(args[1]);
+
+        int portNumber = -1;
+        try {
+            portNumber = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.err.println("Port number should be an integer.");
+            System.exit(2);
+        }
+
         new Client(hostName, portNumber, System.in, System.out).runClient();
     }
 
@@ -79,10 +87,15 @@ public class Client {
                 continue;
             }
 
-            String type = args[0];
+            QueryType type = QueryType.getEnum(args[0]);
             String path = args[1].trim();
 
-            QueryStatus status = processQuery(type.equals("list") ? 1 : 2, path);
+            if (type == null) {
+                writer.println("Unexpected error occurred while reading query type. Try once more");
+                continue;
+            }
+
+            QueryStatus status = processQuery(type, path);
             switch (status) {
                 case RESPONSE_ERROR:
                     writer.println("Error occurred while getting response from server.");
@@ -91,8 +104,12 @@ public class Client {
                 case CONNECTION_ERROR:
                     writer.println("Can't connect to server. Try again later.");
                     break;
+                case FILE_NOT_EXISTS_ERROR:
+                    writer.println("Specified file was not found on server.");
+                    writer.println("Make sure that you have entered correct file name and that it is not a directory");
+                    break;
                 case SUCCESS:
-                    if (type.equals("get")) {
+                    if (type.equals(QueryType.getQuery)) {
                         writer.println("File was successfully downloaded to the current directory.");
                     }
                     break;
@@ -105,22 +122,26 @@ public class Client {
      * @param type type of query
      * @param path path to the file or directory
      */
-    private QueryStatus processQuery(int type, @NotNull String path) {
+    private QueryStatus processQuery(QueryType type, @NotNull String path) {
         try (Socket socket = new Socket(hostName, portNumber);
              DataInputStream dataInput = new DataInputStream(socket.getInputStream());
              DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream())
         ) {
-            dataOutput.writeInt(type);
+            dataOutput.writeInt(type.getValue());
             dataOutput.write(path.getBytes());
             dataOutput.flush();
 
             socket.shutdownOutput();
 
             try {
-                if (type == 1) {
+                if (type.equals(QueryType.listQuery)) {
                     listFiles(dataInput);
                 } else {
-                    saveFile(dataInput, new File(path).getName());
+                    try {
+                        saveFile(dataInput, new File(path).getName());
+                    } catch (FileNotExistsException e) {
+                        return QueryStatus.FILE_NOT_EXISTS_ERROR;
+                    }
                 }
             } catch (IOException e) {
                 return QueryStatus.RESPONSE_ERROR;
@@ -156,6 +177,10 @@ public class Client {
      */
     private void saveFile(@NotNull DataInputStream dataInput, @NotNull String filename) throws IOException {
         long size = dataInput.readLong();
+
+        if (size < 0) {
+            throw new FileNotExistsException();
+        }
         if (size == 0) {
             return;
         }
@@ -180,6 +205,15 @@ public class Client {
     private class FileTransferProtocolException extends IOException {
         private FileTransferProtocolException() {
             super("Some data lost or you received some extra data while getting file from server");
+        }
+    }
+
+    /**
+     * Is thrown is specified file was not found on server.
+     */
+    private class FileNotExistsException extends IOException {
+        private FileNotExistsException() {
+            super("Specified file was not found on server");
         }
     }
 

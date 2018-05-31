@@ -180,4 +180,22 @@ class InteractionTest {
         assertTrue(new File("hello.txt").delete());
     }
 
+    @Test
+    void testGetFunctionFileNotExists() {
+        String request = "get " + Paths.get("src", "test", "resources", "abracadabra.txt").toString();
+
+        ByteArrayInputStream input = new ByteArrayInputStream(request.getBytes(StandardCharsets.UTF_8));
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        Client client = new Client(hostName, portNumber, input, output);
+
+        assertTrue(!new File("abracadabra.txt").exists());
+
+        client.runClient();
+
+        assertEquals("Specified file was not found on server.\n" +
+                "Make sure that you have entered correct file name and that it is not a directory", output.toString().trim());
+        assertTrue(!new File("abracadabra.txt").exists());
+    }
+
 }

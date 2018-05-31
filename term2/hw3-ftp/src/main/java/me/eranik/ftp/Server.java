@@ -32,9 +32,17 @@ public class Server {
             System.exit(1);
         }
 
-        int portNumber = Integer.parseInt(args[0]);
+        int portNumber = -1;
+        try {
+            portNumber = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            System.err.println("Port number should be an integer.");
+            System.exit(2);
+        }
 
-        Thread server = new Thread(() -> new Server(portNumber).runServer());
+        final int finalPortNumber = portNumber;
+
+        Thread server = new Thread(() -> new Server(finalPortNumber).runServer());
         server.setDaemon(false);
         server.start();
 
@@ -175,7 +183,7 @@ public class Server {
         private static void processGetQuery(@NotNull DataOutputStream output, @NotNull String path) throws IOException {
             File file = new File(path);
             if (!file.isFile()) {
-                output.writeLong(0);
+                output.writeLong(-1);
                 return;
             }
             output.writeLong(file.length());
@@ -200,12 +208,12 @@ public class Server {
                 int type = input.readInt();
                 String path = readPath(input);
 
-                if (type == 1) {
+                if (type == QueryType.listQuery.getValue()) {
                     processListQuery(output, path);
                     output.flush();
                     return;
                 }
-                if (type == 2) {
+                if (type == QueryType.getQuery.getValue()) {
                     processGetQuery(output, path);
                     output.flush();
                     return;
